@@ -101,10 +101,9 @@ structure Stmt_CrudeInt : Prop where
 /-! ## GAP 4: 2-adic smallness (expected routine; proved as a lemma, not a hypothesis) -/
 
 /-- **GAP 4 (valuation)**: `v₂(S_n) ≥ 12 n - A log₂(n+1) - log₂ c` uniformly over admissible
-`(n, h)`
-(unnormalised; `2a = 12`), in the form `‖S_n‖ · 2^{12n} ≤ c (n+1)^A`.  Stated for every limit `I`
-of the Riemann sums, so no convergence proof is needed.  Numerically `12n - v₂(S_n) = 23 … 39`
-for configuration E, `n ≤ 640`. -/
+`(n, h)` (unnormalised; `2a = 12`), in the form `‖S_n‖ · 2^{12n} ≤ c (n+1)^A`.  Stated for every
+limit `I` of the Riemann sums, so no convergence proof is needed.  Numerically
+`12n - v₂(S_n) = 23 … 39` for configuration E, `n ≤ 640`. -/
 def Stmt_Valuation : Prop :=
   ∃ (c : ℝ) (A : ℕ), ∀ (n : ℕ) (h : Fin 6 → ℤ), Admissible n h → ∀ I : ℚ_[2],
     HasVolkenborn (fun x => ((integrand n h x : ℚ) : ℚ_[2])) I →
@@ -113,10 +112,9 @@ def Stmt_Valuation : Prop :=
 /-! ## The open gaps (hypotheses of the main theorem) -/
 
 /-- **GAP 1 (growth)**: along the configuration, `max(|ρ₀|, |Z₇|, |Z₉|) ≤ exp((g + ε) n)`
-eventually,
-for every `ε > 0`.  Configuration E: measured `g ≈ -0.79` (fits: limit `≈ -0.786`); the naive
-residue bound gives `+0.77` — about `1.6` nats per `n` of cancellation must be proved.  Target
-`gE = -0.72`. -/
+eventually, for every `ε > 0`.  Configuration E: measured `g ≈ -0.79` (fits: limit `≈ -0.786`;
+saddle-point conjecture `-0.78128`, see `Pair/Proofs/Growth.lean`); the naive residue bound gives
+`+0.77` — about `1.6` nats per `n` of cancellation must be proved.  Target `gE = -0.72`. -/
 def Stmt_Growth (cfg : Config) (g : ℝ) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∀ᶠ m in atTop,
     |(rho0 (cfg.n m) (cfg.h m) : ℝ)| ≤ Real.exp ((g + ε) * cfg.n m) ∧
@@ -146,9 +144,9 @@ def Stmt_Nonvanishing (cfg : Config) : Prop :=
 /-- **Lai–Sprang condition** (a purely arithmetic sufficient condition for GAP 3; Lai–Sprang,
 arXiv:2306.10393, Lemma 2.2): for every bound `B`, frequently along the configuration there is a
 prime `q > B` at which `ρ₀ ≠ 0` has strictly smaller `q`-adic valuation than both non-zero
-`ζ`-coefficients.  Numerically (configuration E, `n = 120, 200, 400`) **every** prime
-`q ∈ (√n, n]` satisfies it (`n = 40 … 400`), with `v_q(Z₇) - v_q(ρ₀) ≥ 6` and
-`v_q(Z₉) - v_q(ρ₀) ≥ 7` (typically `7` and `9`).
+`ζ`-coefficients.  Numerically (configuration E, `n = 40, 80, 120, 160, 200, 400`) **every**
+prime `q ∈ (√n, n]` satisfies it, with `v_q(Z₇) - v_q(ρ₀) ≥ 6` and `v_q(Z₉) - v_q(ρ₀) ≥ 7`
+(typically `7` and `9`).
 `Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` is the routine lemma `Nonvanishing_of_LaiSprang`
 (`Pair/Proofs/NonvanishingLS.lean`). -/
 def Stmt_LaiSprangCond (cfg : Config) : Prop :=
