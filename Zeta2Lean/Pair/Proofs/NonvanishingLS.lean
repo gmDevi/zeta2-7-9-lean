@@ -3,7 +3,7 @@ import Zeta2Lean.Pair.Statements
 /-!
 # The Lai–Sprang condition implies nonvanishing (reduction of GAP 3 to arithmetic)
 
-gap: '' (routine).
+gap: '' (routine).  **Proved** (architect, 2026-09-24).
 
 **Task.** Prove
 `Nonvanishing_of_LaiSprang : Stmt_L1 → Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg`
@@ -38,9 +38,102 @@ noncomputable section
 
 namespace Zeta2.Pair
 
+/-- `J 6 = 768 ζ₂(7)`. -/
+private theorem J6_of_zeta2 : J 6 = 768 * zeta2 7 := by
+  simp only [zeta2]
+  norm_num
+  ring
+
+/-- `J 8 = 4096 ζ₂(9)`. -/
+private theorem J8_of_zeta2 : J 8 = 4096 * zeta2 9 := by
+  simp only [zeta2]
+  norm_num
+  ring
+
+/-- Valuation core of the Lai–Sprang argument. -/
+private theorem ls_core {q : ℕ} [Fact q.Prime] {b : ℕ} (hb : 0 < b) (hbq : b < q)
+    {ρ z7 z9 : ℚ} {a7 a9 : ℤ} (hρ : ρ ≠ 0)
+    (h7 : z7 = 0 ∨ padicValRat q ρ < padicValRat q z7)
+    (h9 : z9 = 0 ∨ padicValRat q ρ < padicValRat q z9)
+    (key : (b : ℚ) * ρ + (a7 : ℚ) * z7 + (a9 : ℚ) * z9 = 0) : False := by
+  have hb0 : (b : ℚ) ≠ 0 := by exact_mod_cast hb.ne'
+  have hvb : padicValRat q (b : ℚ) = 0 := by
+    rw [padicValRat.of_nat]
+    have : ¬ q ∣ b := fun h => absurd (Nat.le_of_dvd hb h) (not_le.2 hbq)
+    simp [padicValNat.eq_zero_of_not_dvd this]
+  have hbρ : padicValRat q ((b : ℚ) * ρ) = padicValRat q ρ := by
+    rw [padicValRat.mul hb0 hρ, hvb, zero_add]
+  -- the sum of the two ζ-terms
+  have hS : (a7 : ℚ) * z7 + (a9 : ℚ) * z9 = -((b : ℚ) * ρ) := by linear_combination key
+  have hS0 : (a7 : ℚ) * z7 + (a9 : ℚ) * z9 ≠ 0 := by
+    rw [hS]; exact neg_ne_zero.2 (mul_ne_zero hb0 hρ)
+  have hvS : padicValRat q ((a7 : ℚ) * z7 + (a9 : ℚ) * z9) = padicValRat q ρ := by
+    rw [hS, padicValRat.neg, hbρ]
+  -- `v(a z) ≥ v(z)` for a non-zero integer `a` and `z ≠ 0`
+  have hint : ∀ (a : ℤ) (z : ℚ), (a : ℚ) ≠ 0 → z ≠ 0 →
+      padicValRat q z ≤ padicValRat q ((a : ℚ) * z) := by
+    intro a z ha hz
+    rw [padicValRat.mul ha hz, padicValRat.of_int]
+    have : (0 : ℤ) ≤ (padicValInt q a : ℤ) := Int.natCast_nonneg _
+    linarith
+  by_cases hA : (a7 : ℚ) * z7 = 0
+  · -- only the `ζ₂(9)`-term survives
+    rw [hA, zero_add] at hvS hS0
+    have ha9 : (a9 : ℚ) ≠ 0 := left_ne_zero_of_mul hS0
+    have hz9 : z9 ≠ 0 := right_ne_zero_of_mul hS0
+    have h9' := h9.resolve_left hz9
+    have := hint a9 z9 ha9 hz9
+    linarith
+  by_cases hB : (a9 : ℚ) * z9 = 0
+  · -- only the `ζ₂(7)`-term survives
+    rw [hB, add_zero] at hvS hS0
+    have ha7 : (a7 : ℚ) ≠ 0 := left_ne_zero_of_mul hS0
+    have hz7 : z7 ≠ 0 := right_ne_zero_of_mul hS0
+    have h7' := h7.resolve_left hz7
+    have := hint a7 z7 ha7 hz7
+    linarith
+  · -- both terms are non-zero
+    have hz7 : z7 ≠ 0 := right_ne_zero_of_mul hA
+    have hz9 : z9 ≠ 0 := right_ne_zero_of_mul hB
+    have h7' := h7.resolve_left hz7
+    have h9' := h9.resolve_left hz9
+    have e7 := hint a7 z7 (left_ne_zero_of_mul hA) hz7
+    have e9 := hint a9 z9 (left_ne_zero_of_mul hB) hz9
+    have hmin := padicValRat.min_le_padicValRat_add (p := q) hS0
+    rw [hvS] at hmin
+    rcases min_le_iff.1 hmin with h | h <;> linarith
+
 theorem Nonvanishing_of_LaiSprang (cfg : Config) (hL1 : Stmt_L1) (hLS : Stmt_LaiSprangCond cfg) :
     Stmt_Nonvanishing cfg := by
-  sorry
+  rintro ⟨r7, hr7⟩ ⟨r9, hr9⟩
+  -- a common denominator `b` of `r₇, r₉`
+  set b : ℕ := r7.den * r9.den with hbdef
+  have hb : 0 < b := Nat.mul_pos r7.den_pos r9.den_pos
+  have ha7 : (b : ℚ) * r7 = ((r7.num * r9.den : ℤ) : ℚ) := by
+    rw [hbdef]
+    push_cast
+    rw [show ((r7.den : ℚ) * r9.den) * r7 = (r7 * r7.den) * r9.den by ring, Rat.mul_den_eq_num]
+  have ha9 : (b : ℚ) * r9 = ((r9.num * r7.den : ℤ) : ℚ) := by
+    rw [hbdef]
+    push_cast
+    rw [show ((r7.den : ℚ) * r9.den) * r9 = (r9 * r9.den) * r7.den by ring, Rat.mul_den_eq_num]
+  refine (hLS b).mono fun m hm => ?_
+  obtain ⟨q, hq, hbq, hρ, h7, h9⟩ := hm
+  have := Fact.mk hq
+  intro I hI hI0
+  -- `I` is the linear form, a rational number
+  have hIeq := hI.unique (hL1 (cfg.n m) (cfg.h m) (cfg.adm m))
+  have hlin : (((rho0 (cfg.n m) (cfg.h m) + Z7 (cfg.n m) (cfg.h m) * r7 +
+      Z9 (cfg.n m) (cfg.h m) * r9 : ℚ)) : ℚ_[2]) = 0 := by
+    rw [← hI0, hIeq, J6_of_zeta2, J8_of_zeta2, hr7, hr9]
+    simp only [Z7, Z9]
+    push_cast
+    ring
+  have hlinQ : rho0 (cfg.n m) (cfg.h m) + Z7 (cfg.n m) (cfg.h m) * r7 +
+      Z9 (cfg.n m) (cfg.h m) * r9 = 0 := by exact_mod_cast hlin
+  refine ls_core hb hbq hρ h7 h9 (a7 := r7.num * r9.den) (a9 := r9.num * r7.den) ?_
+  rw [← ha7, ← ha9]
+  linear_combination (b : ℚ) * hlinQ
 
 end Zeta2.Pair
 

@@ -8,7 +8,8 @@ lives in `Zeta2Lean/Pair/` (namespace `Zeta2.Pair`).
 
 Status (2026-09-24): definitions, statements and the logical assembly are complete, and the build
 is green. The main theorem is proved from PNT, the three open gap statements, and routine lemmas.
-The routine lemmas are proof stubs (`sorry`) waiting for provers. **The theorem is not proved.**
+The reduction `Nonvanishing_of_LaiSprang` (GAP 3 from an arithmetic condition) is also proved. The
+other routine lemmas are proof stubs (`sorry`) waiting for provers. **The theorem is not proved.**
 GAP 1 (growth) is the decisive open problem.
 
 ## Main theorem (`Zeta2Lean/Pair/Main.lean`)
@@ -74,7 +75,7 @@ pair does **not** assume Andrews' transformation. A gap track that needs it can 
 Zeta2Lean/Pair/Defs.lean        definitions (family, coefficients, linear form, Config, configE, targets)
 Zeta2Lean/Pair/Statements.lean  one Stmt per lemma; the 3 gap Stmts are parametrised by (cfg, g/δ)
 Zeta2Lean/Pair/Assembly.lean    main_of_stmts (complete; generic in cfg, g, δ), marginE, bound_core, ...
-Zeta2Lean/Pair/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X := by sorry   (11 files)
+Zeta2Lean/Pair/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X := by sorry   (10 stubs + NonvanishingLS, proved)
 Zeta2Lean/Pair/Main.lean        wiring + 4 variants of the main theorem + #print axioms
 python/pair_mirror.py           exact mirror of Pair/Defs.lean + numerical check of every Stmt
 python/lfam_reference.py        verbatim copy of the exploration engine lfam.py (independent cross-check)
@@ -96,7 +97,7 @@ receive their dependencies as hypotheses and can be elaborated independently wit
 | `Stmt_CrudeInt` | `2^{6n}(k!(n-k)!)^6 d_n^{6-i} r_{i,k} ∈ ℤ`; `Dcrude n = 2^{6n} n!^6 d_{2n}^{10}` clears ρ₀, Z₇, Z₉ | `CrudeIntegrality` | – | '' | 3 |
 | `Stmt_Valuation` | **GAP 4**: `‖S_n‖ 2^{12n} ≤ c (n+1)^A`, all admissible `(n,h)` | `Valuation` | IntegrandTaylor, Delta, DeltaFun (sibling) | valuation (expected routine) | 4 |
 | `Stmt_LaiSprangCond cfg` | ∀B, frequently ∃ prime q > B: `v_q ρ₀ < v_q Z₇, v_q Z₉` | (hypothesis of the `_LS` variant) | – | nonvanishing (alternative) | 5 |
-| `Nonvanishing_of_LaiSprang` | `Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` | `NonvanishingLS` | L1 | '' | 2 |
+| `Nonvanishing_of_LaiSprang` | `Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` | `NonvanishingLS` (**proved**) | L1 | '' | – |
 | `Stmt_Growth cfg g` | **GAP 1**: ∀ε>0, eventually `|ρ₀|,|Z₇|,|Z₉| ≤ e^{(g+ε)n}` | `Growth` (target `configE`, `gE`) | PF, CoeffVanish | growth | 5 |
 | `Stmt_Denominators cfg δ` | **GAP 2**: PNT → ∃D, eventually ClearsDen, `D‖D‖₂ ≤ e^{(δ+ε)n}` | `Denominators` (target `configE`, `deltaE`) | PF, CoeffVanish, CrudeInt | denominators | 5 |
 | `Stmt_Nonvanishing cfg` | **GAP 3**: ζ₂(7), ζ₂(9) rational → frequently `S_n ≠ 0` | `Nonvanishing` (target `configE`) | L1, IntegrandTaylor, Delta, DeltaFun | nonvanishing | 5 |
