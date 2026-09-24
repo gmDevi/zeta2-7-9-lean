@@ -18,7 +18,8 @@ cited as explicit hypotheses).
 the shifted well-poised family, configuration E, and reuses the Volkenborn and criterion
 infrastructure above. The main theorem `Zeta2.Pair.zeta2_7_9_not_both_rational`
 (`Zeta2Lean/Pair/Main.lean`) is proved from PNT and three open gap statements (growth,
-denominators, nonvanishing), plus routine lemmas whose proofs are stubs. See `BLUEPRINT_PAIR.md`.
+denominators, nonvanishing). All routine lemmas are proved except GAP 4 (`Stmt_Valuation`), whose
+proof is still a stub. See `BLUEPRINT_PAIR.md` and `STATUS_PAIR.md`.
 The mirror is `python/pair_mirror.py`; the independent reference engine is
 `python/lfam_reference.py`. The audit's from-scratch engine is
 `python/pair_audit_independent.py`; see "Audit" in `BLUEPRINT_PAIR.md`.

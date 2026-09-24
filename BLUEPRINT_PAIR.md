@@ -6,11 +6,12 @@ This project is a copy of `zeta2-lean` (the `{7,9,11}` theorem, `BLUEPRINT.md`);
 infrastructure, the criterion and the Δ-calculus are **reused** from it. Everything pair-specific
 lives in `Zeta2Lean/Pair/` (namespace `Zeta2.Pair`).
 
-Status (2026-09-24): definitions, statements and the logical assembly are complete, and the build
-is green. The main theorem is proved from PNT, the three open gap statements, and routine lemmas.
-The reduction `Nonvanishing_of_LaiSprang` (GAP 3 from an arithmetic condition) is also proved. The
-other routine lemmas are proof stubs (`sorry`) waiting for provers. **The theorem is not proved.**
-GAP 1 (growth) is the decisive open problem.
+Status (2026-09-24, after prove round 1; census in `STATUS_PAIR.md`): definitions, statements and
+the logical assembly are complete, and the build is green. All routine lemmas are proved except
+GAP 4 (`Valuation_proof`, still a stub). The five reused sibling files and the reduction
+`Nonvanishing_of_LaiSprang` (GAP 3 from an arithmetic condition) are proved too. So the main
+theorem is proved from PNT, the three open gap statements and `Stmt_Valuation`. **The theorem is
+not proved.** GAP 1 (growth) is the decisive open problem.
 
 ## Main theorem (`Zeta2Lean/Pair/Main.lean`)
 
@@ -31,8 +32,9 @@ Variants in the same file:
 
 `zeta2 s = J (s-1) / ((s-1) 2^s)`, and `J` is the Volkenborn integral of `(t+1/2)^{-s}`, as in the
 sibling (LSZ Lemma 2.8, cited normalisation, see `BLUEPRINT.md`).
-`#print axioms` currently shows `propext, sorryAx, Classical.choice, Quot.sound`. The `sorryAx`
-comes only from proof stubs.
+`#print axioms` currently shows `propext, sorryAx, Classical.choice, Quot.sound`. For the main
+theorem, the `sorryAx` comes only from the `Valuation_proof` stub (GAP 4). With `Stmt_Valuation`
+as a hypothesis, the assembly has only `propext, Classical.choice, Quot.sound` (`STATUS_PAIR.md`).
 
 ## The family (`Pair/Defs.lean`)
 
@@ -75,7 +77,7 @@ pair does **not** assume Andrews' transformation. A gap track that needs it can 
 Zeta2Lean/Pair/Defs.lean        definitions (family, coefficients, linear form, Config, configE, targets)
 Zeta2Lean/Pair/Statements.lean  one Stmt per lemma; the 3 gap Stmts are parametrised by (cfg, g/δ)
 Zeta2Lean/Pair/Assembly.lean    main_of_stmts (complete; generic in cfg, g, δ), marginE, bound_core, ...
-Zeta2Lean/Pair/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X := by sorry   (10 stubs + NonvanishingLS, proved)
+Zeta2Lean/Pair/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X   (7 proved; stubs: Valuation + the 3 gaps)
 Zeta2Lean/Pair/Main.lean        wiring + 4 variants of the main theorem + #print axioms
 python/pair_mirror.py           exact mirror of Pair/Defs.lean + numerical check of every Stmt
 python/lfam_reference.py        verbatim copy of the exploration engine lfam.py (independent cross-check)
@@ -89,12 +91,12 @@ receive their dependencies as hypotheses and can be elaborated independently wit
 
 | Stmt | content | file | deps | gap | diff. |
 |---|---|---|---|---|---|
-| `Stmt_GenLinearForm` | Riemann sums of `∑ (i)₃ r_{i,k}(x+k+½)^{-i-3}` → `genRho0 + ∑ (i)₃ c_i J_{i+3}` (any `a`, `r`) | `GenLinearForm` | JConv, Translation (sibling) | '' | 2 |
-| `Stmt_PF` | `Rnum = PFpoly`; Taylor form at non-poles | `PartialFractions` | – | '' | 4 |
-| `Stmt_CoeffVanish` | `r_{i,n-k} = (-1)^{i+1} r_{i,k}`, `c₁ = 0`, `c_even = 0` | `CoeffVanish` | PF | '' | 3 |
-| `Stmt_L1` | `S_n = ρ₀ + 60c₃J₆ + 210c₅J₈` (only ζ₂(7), ζ₂(9)) | `LinearForm` | GenLinearForm, CoeffVanish | '' | 2 |
-| `Stmt_IntegrandTaylor` | `integrand n h x = -6 [ε³] R_n(x+½+ε)` (product form) | `IntegrandTaylor` | PF | '' | 2 |
-| `Stmt_CrudeInt` | `2^{6n}(k!(n-k)!)^6 d_n^{6-i} r_{i,k} ∈ ℤ`; `Dcrude n = 2^{6n} n!^6 d_{2n}^{10}` clears ρ₀, Z₇, Z₉ | `CrudeIntegrality` | – | '' | 3 |
+| `Stmt_GenLinearForm` | Riemann sums of `∑ (i)₃ r_{i,k}(x+k+½)^{-i-3}` → `genRho0 + ∑ (i)₃ c_i J_{i+3}` (any `a`, `r`) | `GenLinearForm` (**proved**) | JConv, Translation (sibling) | '' | 2 |
+| `Stmt_PF` | `Rnum = PFpoly`; Taylor form at non-poles | `PartialFractions` (**proved**) | – | '' | 4 |
+| `Stmt_CoeffVanish` | `r_{i,n-k} = (-1)^{i+1} r_{i,k}`, `c₁ = 0`, `c_even = 0` | `CoeffVanish` (**proved**) | PF | '' | 3 |
+| `Stmt_L1` | `S_n = ρ₀ + 60c₃J₆ + 210c₅J₈` (only ζ₂(7), ζ₂(9)) | `LinearForm` (**proved**) | GenLinearForm, CoeffVanish | '' | 2 |
+| `Stmt_IntegrandTaylor` | `integrand n h x = -6 [ε³] R_n(x+½+ε)` (product form) | `IntegrandTaylor` (**proved**) | PF | '' | 2 |
+| `Stmt_CrudeInt` | `2^{6n}(k!(n-k)!)^6 d_n^{6-i} r_{i,k} ∈ ℤ`; `Dcrude n = 2^{6n} n!^6 d_{2n}^{10}` clears ρ₀, Z₇, Z₉ | `CrudeIntegrality` (**proved**) | – | '' | 3 |
 | `Stmt_Valuation` | **GAP 4**: `‖S_n‖ 2^{12n} ≤ c (n+1)^A`, all admissible `(n,h)` | `Valuation` | IntegrandTaylor, Delta, DeltaFun (sibling) | valuation (expected routine) | 4 |
 | `Stmt_LaiSprangCond cfg` | ∀B, frequently ∃ prime q > B: `v_q ρ₀ < v_q Z₇, v_q Z₉` | (hypothesis of the `_LS` variant) | – | nonvanishing (alternative) | 5 |
 | `Nonvanishing_of_LaiSprang` | `Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` | `NonvanishingLS` (**proved**) | L1 | '' | – |
@@ -106,9 +108,9 @@ receive their dependencies as hypotheses and can be elaborated independently wit
 Reused sibling statements and their proof files, which the pair `Main.lean` imports:
 `Stmt_JConv` (`Proofs/JConvergence`), `Stmt_Translation` (`Proofs/Translation`),
 `Stmt_Criterion` (`Proofs/Criterion`), `Stmt_Delta` (`Proofs/DeltaCalculus`),
-`Stmt_DeltaFun` (`Proofs/DeltaFunctions`). **These files are copies. When the sibling project
-proves them, copy the proved versions into this project** (same paths, same statements). No
-other sibling proof file is used.
+`Stmt_DeltaFun` (`Proofs/DeltaFunctions`). **All five are proved.** Since prove round 1 they are
+byte-identical copies of the sibling's proved files (same paths, same statements). No other
+sibling proof file is used.
 
 ## Dependency graph
 
@@ -272,12 +274,17 @@ audit; it shares no code with `pair_mirror.py`, `lfam.py` or the verifier's `ven
   endings.
 * `scripts/audit.sh` (audit, 2026-09-24) uses the sibling's hardened census regex. It also catches
   `axiom`/`opaque`/`unsafe` behind modifiers or attributes, and `Lean.trustCompiler`.
-* No change to `Zeta2Lean/Defs.lean`, `Statements.lean`, `Assembly.lean`, `Main.lean` or
-  `Proofs/*`.
-* Sync note (2026-09-24): the sibling's five reused proof files are still stubs, identical to the
-  copies here. The sibling's `Defs.lean` has since gained two proved API lemmas (`mem_chains`,
-  `chainPrev_le`) that the pair does not use. When syncing proved files, also sync `Defs.lean` if
-  they use new API.
+* No change to `Zeta2Lean/Defs.lean`, `Statements.lean`, `Assembly.lean` or `Main.lean`. In
+  `Proofs/*`, only the five reused files changed, by the sync below.
+* Sync (prove round 1, 2026-09-24):
+  * The five reused proof files (`JConvergence`, `Translation`, `Criterion`, `DeltaCalculus`,
+    `DeltaFunctions`) were replaced by the sibling's proved versions. They are byte-identical,
+    checked with `cmp`.
+  * They compile against this copy's `Defs.lean`. The sibling's `Defs.lean` differs only by two
+    API lemmas, `mem_chains` and `chainPrev_le`, which these files do not use. So `Defs.lean` was
+    not synced.
+  * The other 19 `{7,9,11}` proof files in this copy are stale stubs from the fork, and the pair
+    does not use them. If they are ever synced, sync the sibling's `Defs.lean` with them.
 
 ## Workflow for provers
 
