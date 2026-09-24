@@ -1,0 +1,73 @@
+
+== Admissible / configE
+  configE: n = 40m, h = m*(-17,1,2,3,5,6) admissible for m <= 30;  h/n = [-0.425, 0.025, 0.05, 0.075, 0.125, 0.15]
+  42 exact test cases (n <= 12)
+
+== rcoef/rho0/Z7/Z9 (Lean definitions) vs lfam_reference.py (independent engine)
+  agree exactly on 44 cases (incl. config E at n = 40, 80); lfam's only live zeta values: 7, 9
+
+== Stmt_PF: poly (Rnum = PFpoly) and series (Rser = sum r (y+k+eps)^-i)
+  PF.poly verified n <= 5; PF.series at random y, n <= 6
+
+== Stmt_CoeffVanish: symm, c1 = 0, c_even = 0
+  verified on all cases + config E n = 40
+
+== Stmt_CrudeInt: 2^{6n}(k!(n-k)!)^6 d_n^{6-i} r_{i,k} in Z;  ClearsDen(Dcrude n)
+  verified on all cases + config E n = 40
+
+== Stmt_IntegrandTaylor: integrand n h x = -6 [eps^3] Rser n h (x + 1/2)
+  verified n <= 6, x <= 3
+
+== Stmt_GenLinearForm / Stmt_L1: Riemann sums -> rho0 + 60 c3 J6 + 210 c5 J8 (2-adically)
+  n=0 h=[0, 0, 0, 0, 0, 0]: v2(S_n) = 10, v2(R_12 - S_n) = 38
+  n=1 h=[0, 0, 0, 0, 0, 0]: v2(S_n) = 13, v2(R_12 - S_n) = 38
+  n=2 h=[0, 0, 0, 0, 0, 0]: v2(S_n) = 24, v2(R_12 - S_n) = 47
+  n=4 h=[-1, 0, 0, 1, 0, 0]: v2(S_n) = 42, v2(R_12 - S_n) = 52
+  n=6 h=[-2, 0, 1, 0, 1, 0]: v2(S_n) = 62, v2(R_12 - S_n) = 77
+  generic (a=3, n=2, random r): v2(R_12 - value) = 19
+
+== Stmt_Valuation (GAP 4): v2(S_n) >= 12n - A log2(n+1) - c
+  n=40 h=[-17, 1, 2, 3, 5, 6]: v2(S_n) = 457, 12n - v2 = 23, /log2(n+1) = 4.29
+  n=80 h=[-34, 2, 4, 6, 10, 12]: v2(S_n) = 935, 12n - v2 = 25, /log2(n+1) = 3.94
+  n=120 h=[-51, 3, 6, 9, 15, 18]: v2(S_n) = 1415, 12n - v2 = 25, /log2(n+1) = 3.61
+  n=160 h=[-68, 4, 8, 12, 20, 24]: v2(S_n) = 1893, 12n - v2 = 27, /log2(n+1) = 3.68
+  max over tested (n,h) of (12n - v2(S_n))/log2(n+1) = 5.67   (statement: exists c, A)
+
+== GAP data for configuration E (growth gE = -0.72, denominators deltaE = 9.0, nonvanishing)
+  n    raw/n (growth)  lnDodd/n (den)  maxexp(q>sqrt n)  v2S-12n   log(B*|L|_2)/n  S!=0
+  40   -0.7694         7.1785          11                  -23     -1.4971          True
+  80   -0.8181         7.8619          11                  -25     -1.0511          True
+  120  -0.8268         7.9999          11                  -25     -0.9926          True
+  160  -0.8173         8.1196          11                  -27     -0.8939          True
+  200  -0.8197         8.3705          11                  -35     -0.6425          True
+  400  -0.8068         8.3231          11                  -37     -0.7357          True
+  (growth and denominators are asymptotic statements; finite-n values are indicative only.
+   exploration: raw/n -> about -0.786 (fits), provable residue-level lnDodd/n -> 10 - R_inf = 8.91;
+   observed lnDodd/n is smaller (true denominators); the criterion quantity log(B|L|_2)/n < 0 is the margin)
+
+== Stmt_LaiSprangCond (sufficient for GAP 3): v_q(rho0) < v_q(Z7), v_q(Z9) at primes q in (sqrt n, n]
+  n=40     9 of   9 primes satisfy it; largest prime <= n: 37 (ok); (v_q Z7 - v_q rho0, v_q Z9 - v_q rho0) in [(6, 7), (7, 9), (7, 12)]
+  n=80    18 of  18 primes satisfy it; largest prime <= n: 79 (ok); (v_q Z7 - v_q rho0, v_q Z9 - v_q rho0) in [(7, 9)]
+  n=120   26 of  26 primes satisfy it; largest prime <= n: 113 (ok); (v_q Z7 - v_q rho0, v_q Z9 - v_q rho0) in [(7, 9), (7, 10), (9, 13)]
+  n=160   32 of  32 primes satisfy it; largest prime <= n: 157 (ok); (v_q Z7 - v_q rho0, v_q Z9 - v_q rho0) in [(7, 9), (7, 10), (10, 14)]
+  n=200   40 of  40 primes satisfy it; largest prime <= n: 199 (ok); (v_q Z7 - v_q rho0, v_q Z9 - v_q rho0) in [(6, 8), (7, 9), (7, 10)]
+  n=400   70 of  70 primes satisfy it; largest prime <= n: 397 (ok); (v_q Z7 - v_q rho0, v_q Z9 - v_q rho0) in [(6, 8), (7, 9), (8, 9)]
+
+== GAP 1 heuristic: saddle points of the Stirling phase (architect's conjecture)
+  E          tau* = -0.500000+0.000000i  phi' = 2 pi i (+0)  Re[phi - 2 pi i k tau] = +0.65223
+  E          tau* = +0.025030+0.000000i  phi' = 2 pi i (-2)  Re[phi - 2 pi i k tau] = -0.80049
+  E          tau* = +0.046326+0.000000i  phi' = 2 pi i (-2)  Re[phi - 2 pi i k tau] = -0.85201
+  E          tau* = +0.069590+0.031280i  phi' = 2 pi i (-1)  Re[phi - 2 pi i k tau] = -0.78128
+  E          conjectured growth rate (max over saddles with Re tau > 0): -0.78128   (measured -0.786 (fit))
+  D {7,9,11} tau* = -0.500000+0.000000i  phi' = 2 pi i (+0)  Re[phi - 2 pi i k tau] = +1.18183
+  D {7,9,11} tau* = -0.319589+0.000000i  phi' = 2 pi i (+1)  Re[phi - 2 pi i k tau] = +1.57772
+  D {7,9,11} tau* = +0.049973+0.000000i  phi' = 2 pi i (-3)  Re[phi - 2 pi i k tau] = -1.34555
+  D {7,9,11} tau* = +0.087358+0.014855i  phi' = 2 pi i (-2)  Re[phi - 2 pi i k tau] = -1.41062
+  D {7,9,11} tau* = +0.120801+0.067993i  phi' = 2 pi i (-1)  Re[phi - 2 pi i k tau] = -1.18082
+  D {7,9,11} conjectured growth rate (max over saddles with Re tau > 0): -1.18082   (measured -1.22 (n=650, rising))
+
+== Margin arithmetic
+  gE + deltaE = 8.2800  <  12 log 2 = 8.317766 :  margin -0.0378
+
+== SUMMARY
+  0 checks failed; 38 s

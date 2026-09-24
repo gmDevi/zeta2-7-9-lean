@@ -17,10 +17,10 @@ statement by the routine lemma `Nonvanishing_of_LaiSprang` (`Pair/Proofs/Nonvani
 it suffices to find, for every bound `B` and infinitely many `m`, a prime `q > B` with `ρ₀ ≠ 0`,
 `v_q(ρ₀) < v_q(Z₇)` and `v_q(ρ₀) < v_q(Z₉)`.  Numerically this holds for **every** prime
 `q ∈ (√n, n]` at `n = 120, 200, 400` (26, 40, 70 primes), always with
-`v_q(Z₇) - v_q(ρ₀) ≥ 7` and `v_q(Z₉) - v_q(ρ₀) ≥ 9`, `v_q(ρ₀) ∈ [-11, -5]`
+`v_q(Z₇) - v_q(ρ₀) ≥ 6` and `v_q(Z₉) - v_q(ρ₀) ≥ 7` (typically `7` and `9`), `v_q(ρ₀) ∈ [-11, -5]`
 (`scratchpad/pair79/architect/laisprang_check.out`).  A natural choice is the largest prime
-`q ≤ n` (then `q > n/2` for large `n`, `v_q(d_n) = 1`, and `A_k^{(s)}` has exactly one `q`-pole,
-from `ℓ = (q-1)/2`).  What must be proved at such `q`:
+`q ≤ n` (then `q > 2n/3` for large `n`, `v_q(d_n) = 1`, and `A_k^{(s)}` has exactly one `q`-pole,
+from `ℓ = (q-1)/2`, since `3q > 2n`).  What must be proved at such `q`:
 * an *upper* bound `v_q(ρ₀) ≤ -e` — exhibit the `q`-adic principal part of
   `ρ₀ = -∑_{i,k} (i)₄ r_{i,k} A_k^{(i+4)}`: only the term `ℓ = (q-1)/2` of `A_k^{(i+4)}`
   (for `k > ℓ`) carries `q^{-(i+4)}`, so the principal part is

@@ -147,7 +147,8 @@ def Stmt_Nonvanishing (cfg : Config) : Prop :=
 arXiv:2306.10393, Lemma 2.2): for every bound `B`, frequently along the configuration there is a
 prime `q > B` at which `ρ₀ ≠ 0` has strictly smaller `q`-adic valuation than both non-zero
 `ζ`-coefficients.  Numerically (configuration E, `n = 120, 200, 400`) **every** prime
-`q ∈ (√n, n]` satisfies it, with `v_q(Z₇) = v_q(ρ₀) + 7`, `v_q(Z₉) = v_q(ρ₀) + 9` (or more).
+`q ∈ (√n, n]` satisfies it (`n = 40 … 400`), with `v_q(Z₇) - v_q(ρ₀) ≥ 6` and
+`v_q(Z₉) - v_q(ρ₀) ≥ 7` (typically `7` and `9`).
 `Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` is the routine lemma `Nonvanishing_of_LaiSprang`
 (`Pair/Proofs/NonvanishingLS.lean`). -/
 def Stmt_LaiSprangCond (cfg : Config) : Prop :=

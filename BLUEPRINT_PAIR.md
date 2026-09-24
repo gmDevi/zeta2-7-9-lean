@@ -175,7 +175,8 @@ general rates.
 * `S_n ≠ 0` at every tested `n ≤ 800`.
 * **Recommended route:** prove `Stmt_LaiSprangCond configE` (pure arithmetic about ρ₀, Z₇, Z₉),
   then apply `Nonvanishing_of_LaiSprang`. At `n = 120, 200, 400`, *every* prime `q ∈ (√n, n]`
-  satisfies it, with `v_q Z₇ − v_q ρ₀ ≥ 7`, `v_q Z₉ − v_q ρ₀ ≥ 9` and `v_q ρ₀ ∈ [−11, −5]`
+  satisfies it, with `v_q Z₇ − v_q ρ₀ ≥ 6`, `v_q Z₉ − v_q ρ₀ ≥ 7` (typically 7 and 9) and
+  `v_q ρ₀ ∈ [−11, −5]`
   (scratchpad `pair79/architect/laisprang_check.out`).
 * Alternatives: Lai's dominant term along a subsequence, or a Casoratian.
 
@@ -213,7 +214,7 @@ range) and checks:
 * `Stmt_LaiSprangCond` at every prime `q ∈ (√n, n]`, the GAP 1 saddle-point values, and
   `marginE`.
 
-The full-run log is in the scratchpad (`pair79/architect/pair_mirror_full.log`); 0 checks fail.
+The full-run log is `python/pair_mirror_full.log`; 0 checks fail.
 
 ## Design decisions
 
