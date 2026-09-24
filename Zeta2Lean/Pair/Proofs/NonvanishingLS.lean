@@ -3,7 +3,9 @@ import Zeta2Lean.Pair.Statements
 /-!
 # The Lai–Sprang condition implies nonvanishing (reduction of GAP 3 to arithmetic)
 
-gap: '' (routine).  **Proved** (architect, 2026-09-24).
+gap: '' (routine).  **Proved** (architect, 2026-09-24).  The audit of 2026-09-24 added the proved
+subsequence lemmas `frequently_prime_forty_mul_sub_one(_gt)` (Dirichlet: `40 m - 1` prime
+infinitely often) for the recommended GAP 3 route at `q = n - 1`.
 
 **Task.** Prove
 `Nonvanishing_of_LaiSprang : Stmt_L1 → Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg`
@@ -134,6 +136,35 @@ theorem Nonvanishing_of_LaiSprang (cfg : Config) (hL1 : Stmt_L1) (hLS : Stmt_Lai
   refine ls_core hb hbq hρ h7 h9 (a7 := r7.num * r9.den) (a9 := r9.num * r7.den) ?_
   rw [← ha7, ← ha9]
   linear_combination (b : ℚ) * hlinQ
+
+/-! ### The subsequence `40 m - 1` prime (audit addition, 2026-09-24)
+
+For configuration E (`n = 40 m`) the natural Lai–Sprang prime is `q = n - 1` (track
+`pair79/nonvanishing`, Theorem A: `v_q(ρ₀) = -9 < v_q(Z₇), v_q(Z₉)`).  Dirichlet's theorem
+(Mathlib `Nat.frequently_atTop_prime_and_modEq`, primes `≡ 39 (mod 40)`) makes that subsequence
+infinite. -/
+
+/-- `40 m - 1` is prime for infinitely many `m` (Dirichlet). -/
+theorem frequently_prime_forty_mul_sub_one : ∃ᶠ m in atTop, (40 * m - 1).Prime := by
+  have h := Nat.frequently_atTop_prime_and_modEq (q := 40) (a := 39) (by norm_num) (by norm_num)
+  rw [Filter.frequently_atTop] at h ⊢
+  intro B
+  obtain ⟨p, hp, hpp, hmod⟩ := h (40 * B + 40)
+  have hm : p % 40 = 39 := by
+    unfold Nat.ModEq at hmod
+    omega
+  refine ⟨(p + 1) / 40, by omega, ?_⟩
+  have hq : 40 * ((p + 1) / 40) - 1 = p := by omega
+  rw [hq]
+  exact hpp
+
+/-- The form used with `Stmt_LaiSprangCond configE`: for every bound `B`, frequently `40 m - 1` is
+a prime `> B`. -/
+theorem frequently_prime_forty_mul_sub_one_gt (B : ℕ) :
+    ∃ᶠ m in atTop, (40 * m - 1).Prime ∧ B < 40 * m - 1 := by
+  refine frequently_prime_forty_mul_sub_one.and_eventually ?_
+  filter_upwards [eventually_ge_atTop (B + 1)] with m hm
+  omega
 
 end Zeta2.Pair
 

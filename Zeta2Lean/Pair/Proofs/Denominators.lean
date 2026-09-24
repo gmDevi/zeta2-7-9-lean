@@ -21,9 +21,11 @@ configuration E many primes `q > √n` occur in the denominator of `ρ₀` with 
 
 **Numerical status** (`python/pair_mirror.py`, "GAP data"): `log(odd part of the true common
 denominator)/n = 7.18, 7.86, 8.00, 8.12, 8.37, 8.32` at `n = 40, 80, 120, 160, 200, 400`; no prime
-`> n` ever occurs; for primes `q ∈ (√n, n]`: `v_q(ρ₀) ∈ [-11, -5]`, `v_q(Z₇) ≥ -4`, `v_q(Z₉) ≥ -2`
-(`scratchpad/pair79/architect/laisprang_check.out`).  Residue-level provable estimate:
-`δ = 10 - R_∞ ≈ 8.91`, `R_∞ = ∫_1^∞ s(x) dx/x² ≈ 1.09` (verifier's `rinf.py`, deterministic).
+`> n` ever occurs; for primes `q ∈ (√n, n]`: `v_q(ρ₀) ∈ [-11, -4]` (`-4` occurs at `n = 160`),
+`v_q(Z₇) ≥ -4`, `v_q(Z₉) ≥ -2` (`scratchpad/pair79/architect/laisprang_check.out`, `n = 120,
+200, 400`; audit `python/pair_audit_independent.py`, `n = 40, 80, 120, 160`).  Residue-level
+provable estimate: `δ = 10 - R_∞ ≈ 8.91`, `R_∞ = ∫_1^∞ s(x) dx/x² ≈ 1.09` (verifier's `rinf.py`,
+deterministic).
 
 **Proof plan (the verifier's sketch, completed).**  Fix an odd prime `q`.
 1. *Derivative lemma* (Zudilin 2004 Lemma 17; proof.md §4.3 Step 6).  Every linear factor of

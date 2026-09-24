@@ -146,8 +146,10 @@ arXiv:2306.10393, Lemma 2.2): for every bound `B`, frequently along the configur
 prime `q > B` at which `ρ₀ ≠ 0` has strictly smaller `q`-adic valuation than both non-zero
 `ζ`-coefficients.  Numerically (configuration E, `n = 40, 80, 120, 160, 200, 400`) **every**
 prime `q ∈ (√n, n]` satisfies it, with `v_q(Z₇) - v_q(ρ₀) ≥ 6` and `v_q(Z₉) - v_q(ρ₀) ≥ 7`
-(typically `7` and `9`).
-`Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` is the routine lemma `Nonvanishing_of_LaiSprang`
+(typically `7` and `9`).  Recommended witness: `q = n - 1` when it is prime (infinitely many `m`
+by Dirichlet, `frequently_prime_forty_mul_sub_one_gt`); there `(v_q ρ₀, v_q Z₇, v_q Z₉) =
+(-9, -2, 0)` at `n = 80, 240, 360` (track `pair79/nonvanishing`, Theorem A; audit engine).
+`Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` is the proved lemma `Nonvanishing_of_LaiSprang`
 (`Pair/Proofs/NonvanishingLS.lean`). -/
 def Stmt_LaiSprangCond (cfg : Config) : Prop :=
   ∀ B : ℕ, ∃ᶠ m in atTop, ∃ q : ℕ, q.Prime ∧ B < q ∧ rho0 (cfg.n m) (cfg.h m) ≠ 0 ∧

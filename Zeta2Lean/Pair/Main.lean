@@ -84,7 +84,7 @@ theorem zeta2_7_9_not_both_rational_uncond (hPNT : PNT_Stmt) : PairStatement :=
     (Growth_proof PF_proof (CoeffVanish_proof PF_proof))
     (Denominators_proof PF_proof (CoeffVanish_proof PF_proof) CrudeInt_proof)
     (Nonvanishing_proof L1_full (IntegrandTaylor_proof PF_proof) Delta_proof
-      (DeltaFun_proof Delta_proof))
+      (DeltaFun_proof Delta_proof) PF_proof (CoeffVanish_proof PF_proof) CrudeInt_proof)
 
 end Zeta2.Pair
 

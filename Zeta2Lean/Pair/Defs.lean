@@ -73,8 +73,9 @@ namespace Zeta2.Pair
 /-! ## Shift vectors -/
 
 /-- Admissible shift vector `h` for degree `n`: `∑_m h_m = 0`, all lengths `n + 2 h_m ≥ 0`, and at
-least five of the six shifts are `≥ 0` (critical-zero condition: `R_n` then vanishes to order `≥ 5 =
-j + 2` at every critical point `-1/2 - c`, `0 ≤ c < n/2`). -/
+least five of the six shifts are `≥ 0` (critical-zero condition: every factor with `h_m ≥ 0` has
+offsets `[-h_m, n + h_m) ⊇ [0, n)`, so `R_n` vanishes to order `≥ 5 = j + 2` at every critical
+point `-1/2 - c`, `0 ≤ c < n`). -/
 def Admissible (n : ℕ) (h : Fin 6 → ℤ) : Prop :=
   ∑ m, h m = 0 ∧ (∀ m, 0 ≤ (n : ℤ) + 2 * h m) ∧ 5 ≤ (univ.filter fun m => 0 ≤ h m).card
 

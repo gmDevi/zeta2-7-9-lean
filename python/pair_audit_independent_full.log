@@ -1,0 +1,105 @@
+== A. rcoef (Lean-literal) = partial fractions of the product form
+  complete verification R_n = sum r (t+k)^-i on 40 small admissible (n,h)
+  random-point identity n = [40, 20, 24, 80] ok
+  CrudeInt.coef, parity lemma, c1 = c2 = c4 = c6 = 0 at n = [40, 20, 24]
+  Stmt_IntegrandTaylor exact at config E n=40, x = 0, 1, 7
+
+== B. J_s from Bernoulli moments vs zeta2 cache
+  J_4: v2 = 4, agreement with cache to >= all bits
+  J_6: v2 = 6, agreement with cache to >= all bits
+  J_8: v2 = 8, agreement with cache to >= all bits
+  J_10: v2 = 10, agreement with cache to >= all bits
+  J_odd = 0 to the working precision
+
+== C. end-to-end L1 (product-form Riemann sums -> rho0 + 60 c3 J6 + 210 c5 J8)
+  n=40 h=[-17, 1, 2, 3, 5, 6] N=6: v2(S)=457  v2(R_N)=457  v2(R_N - S)=458  (precision 1320)
+  n=40 h=[-17, 1, 2, 3, 5, 6] N=9: v2(S)=457  v2(R_N)=457  v2(R_N - S)=461  (precision 1317)
+  n=40 h=[-17, 1, 2, 3, 5, 6] N=12: v2(S)=457  v2(R_N)=457  v2(R_N - S)=464  (precision 1314)
+  n=6 h=[-2, 0, 1, 0, 1, 0] N=6: v2(S)=62  v2(R_N)=62  v2(R_N - S)=73  (precision 431)
+  n=6 h=[-2, 0, 1, 0, 1, 0] N=9: v2(S)=62  v2(R_N)=62  v2(R_N - S)=74  (precision 428)
+  n=6 h=[-2, 0, 1, 0, 1, 0] N=12: v2(S)=62  v2(R_N)=62  v2(R_N - S)=77  (precision 425)
+  n=20 h=[-10, 10, 0, 0, 0, 0] N=6: v2(S)=223  v2(R_N)=223  v2(R_N - S)=225  (precision 798)
+  n=20 h=[-10, 10, 0, 0, 0, 0] N=9: v2(S)=223  v2(R_N)=223  v2(R_N - S)=228  (precision 795)
+  n=20 h=[-10, 10, 0, 0, 0, 0] N=12: v2(S)=223  v2(R_N)=223  v2(R_N - S)=231  (precision 792)
+  n=80 h=[-34, 2, 4, 6, 10, 12] N=6: v2(S)=935  v2(R_N)=936  v2(R_N - S)=935  (precision 2362)
+  n=80 h=[-34, 2, 4, 6, 10, 12] N=10: v2(S)=935  v2(R_N)=935  v2(R_N - S)=939  (precision 2358)
+
+== D. Stmt_Valuation uniformity: deficit 12n - v2(S) over extreme admissible h
+  n= 10 h=[0, 0, 0, 0, 0, 0]           v2(S)=  110  deficit= 10  deficit/log2(n+1)=2.89
+  n= 10 h=[-5, 5, 0, 0, 0, 0]          v2(S)=  105  deficit= 15  deficit/log2(n+1)=4.34
+  n= 10 h=[-5, 0, 0, 0, 0, 5]          v2(S)=  105  deficit= 15  deficit/log2(n+1)=4.34
+  n= 10 h=[-5, 2, 3, 0, 0, 0]          v2(S)=  108  deficit= 12  deficit/log2(n+1)=3.47
+  n= 10 h=[-5, 1, 1, 1, 1, 1]          v2(S)=  109  deficit= 11  deficit/log2(n+1)=3.18
+  n= 10 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  108  deficit= 12  deficit/log2(n+1)=3.47
+  n= 10 h=[-2, 2, 0, 0, 0, 0]          v2(S)=  110  deficit= 10  deficit/log2(n+1)=2.89
+  n= 16 h=[0, 0, 0, 0, 0, 0]           v2(S)=  187  deficit=  5  deficit/log2(n+1)=1.22
+  n= 16 h=[-8, 8, 0, 0, 0, 0]          v2(S)=  184  deficit=  8  deficit/log2(n+1)=1.96
+  n= 16 h=[-8, 0, 0, 0, 0, 8]          v2(S)=  184  deficit=  8  deficit/log2(n+1)=1.96
+  n= 16 h=[-8, 4, 4, 0, 0, 0]          v2(S)=  181  deficit= 11  deficit/log2(n+1)=2.69
+  n= 16 h=[-8, 1, 1, 1, 1, 4]          v2(S)=  176  deficit= 16  deficit/log2(n+1)=3.91
+  n= 16 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  178  deficit= 14  deficit/log2(n+1)=3.43
+  n= 16 h=[-4, 4, 0, 0, 0, 0]          v2(S)=  182  deficit= 10  deficit/log2(n+1)=2.45
+  n= 20 h=[0, 0, 0, 0, 0, 0]           v2(S)=  230  deficit= 10  deficit/log2(n+1)=2.28
+  n= 20 h=[-10, 10, 0, 0, 0, 0]        v2(S)=  223  deficit= 17  deficit/log2(n+1)=3.87
+  n= 20 h=[-10, 0, 0, 0, 0, 10]        v2(S)=  223  deficit= 17  deficit/log2(n+1)=3.87
+  n= 20 h=[-10, 5, 5, 0, 0, 0]         v2(S)=  221  deficit= 19  deficit/log2(n+1)=4.33
+  n= 20 h=[-10, 2, 2, 2, 2, 2]         v2(S)=  230  deficit= 10  deficit/log2(n+1)=2.28
+  n= 20 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  224  deficit= 16  deficit/log2(n+1)=3.64
+  n= 20 h=[-5, 5, 0, 0, 0, 0]          v2(S)=  221  deficit= 19  deficit/log2(n+1)=4.33
+  n= 24 h=[0, 0, 0, 0, 0, 0]           v2(S)=  275  deficit= 13  deficit/log2(n+1)=2.80
+  n= 24 h=[-12, 12, 0, 0, 0, 0]        v2(S)=  272  deficit= 16  deficit/log2(n+1)=3.45
+  n= 24 h=[-12, 0, 0, 0, 0, 12]        v2(S)=  272  deficit= 16  deficit/log2(n+1)=3.45
+  n= 24 h=[-12, 6, 6, 0, 0, 0]         v2(S)=  269  deficit= 19  deficit/log2(n+1)=4.09
+  n= 24 h=[-12, 2, 2, 2, 2, 4]         v2(S)=  268  deficit= 20  deficit/log2(n+1)=4.31
+  n= 24 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  268  deficit= 20  deficit/log2(n+1)=4.31
+  n= 24 h=[-6, 6, 0, 0, 0, 0]          v2(S)=  270  deficit= 18  deficit/log2(n+1)=3.88
+  n= 30 h=[0, 0, 0, 0, 0, 0]           v2(S)=  334  deficit= 26  deficit/log2(n+1)=5.25
+  n= 30 h=[-15, 15, 0, 0, 0, 0]        v2(S)=  330  deficit= 30  deficit/log2(n+1)=6.06
+  n= 30 h=[-15, 0, 0, 0, 0, 15]        v2(S)=  330  deficit= 30  deficit/log2(n+1)=6.06
+  n= 30 h=[-15, 7, 8, 0, 0, 0]         v2(S)=  334  deficit= 26  deficit/log2(n+1)=5.25
+  n= 30 h=[-15, 3, 3, 3, 3, 3]         v2(S)=  346  deficit= 14  deficit/log2(n+1)=2.83
+  n= 30 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  330  deficit= 30  deficit/log2(n+1)=6.06
+  n= 30 h=[-7, 7, 0, 0, 0, 0]          v2(S)=  332  deficit= 28  deficit/log2(n+1)=5.65
+  n= 40 h=[0, 0, 0, 0, 0, 0]           v2(S)=  468  deficit= 12  deficit/log2(n+1)=2.24
+  n= 40 h=[-20, 20, 0, 0, 0, 0]        v2(S)=  461  deficit= 19  deficit/log2(n+1)=3.55
+  n= 40 h=[-20, 0, 0, 0, 0, 20]        v2(S)=  461  deficit= 19  deficit/log2(n+1)=3.55
+  n= 40 h=[-20, 10, 10, 0, 0, 0]       v2(S)=  459  deficit= 21  deficit/log2(n+1)=3.92
+  n= 40 h=[-20, 4, 4, 4, 4, 4]         v2(S)=  468  deficit= 12  deficit/log2(n+1)=2.24
+  n= 40 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  460  deficit= 20  deficit/log2(n+1)=3.73
+  n= 40 h=[-10, 10, 0, 0, 0, 0]        v2(S)=  459  deficit= 21  deficit/log2(n+1)=3.92
+  n= 40 h=[-17, 1, 2, 3, 5, 6]         v2(S)=  457  deficit= 23  deficit/log2(n+1)=4.29
+  n= 60 h=[0, 0, 0, 0, 0, 0]           v2(S)=  691  deficit= 29  deficit/log2(n+1)=4.89
+  n= 60 h=[-30, 30, 0, 0, 0, 0]        v2(S)=  688  deficit= 32  deficit/log2(n+1)=5.40
+  n= 60 h=[-30, 0, 0, 0, 0, 30]        v2(S)=  688  deficit= 32  deficit/log2(n+1)=5.40
+  n= 60 h=[-30, 15, 15, 0, 0, 0]       v2(S)=  689  deficit= 31  deficit/log2(n+1)=5.23
+  n= 60 h=[-30, 6, 6, 6, 6, 6]         v2(S)=  703  deficit= 17  deficit/log2(n+1)=2.87
+  n= 60 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  686  deficit= 34  deficit/log2(n+1)=5.73
+  n= 60 h=[-15, 15, 0, 0, 0, 0]        v2(S)=  688  deficit= 32  deficit/log2(n+1)=5.40
+  n= 80 h=[0, 0, 0, 0, 0, 0]           v2(S)=  946  deficit= 14  deficit/log2(n+1)=2.21
+  n= 80 h=[-40, 40, 0, 0, 0, 0]        v2(S)=  939  deficit= 21  deficit/log2(n+1)=3.31
+  n= 80 h=[-40, 0, 0, 0, 0, 40]        v2(S)=  939  deficit= 21  deficit/log2(n+1)=3.31
+  n= 80 h=[-40, 20, 20, 0, 0, 0]       v2(S)=  937  deficit= 23  deficit/log2(n+1)=3.63
+  n= 80 h=[-40, 8, 8, 8, 8, 8]         v2(S)=  946  deficit= 14  deficit/log2(n+1)=2.21
+  n= 80 h=[-1, 1, 0, 0, 0, 0]          v2(S)=  936  deficit= 24  deficit/log2(n+1)=3.79
+  n= 80 h=[-20, 20, 0, 0, 0, 0]        v2(S)=  937  deficit= 23  deficit/log2(n+1)=3.63
+  n= 80 h=[-34, 2, 4, 6, 10, 12]       v2(S)=  935  deficit= 25  deficit/log2(n+1)=3.94
+  max deficit/log2(n+1) = 6.06
+
+== E. gap statements at finite n along config E (n = 40 m, h = m hE)
+  n=40: raw/n=-0.769443 (rho0 -0.830499, Z7 -0.782553, Z9 -0.769443)  ln(oddD)/n=7.178549  v2S=457  12n-v2S=23  crit=-1.4971
+        LS: 9/9 primes in (sqrt n, n] ok; min gaps (Z7,Z9) = (6,7); v_q(rho0) in [-11,-6]; min v_q(Z7)=-4 min v_q(Z9)=-2; max exp in odd D (q>sqrt n) = 11
+  n=80: raw/n=-0.818051 (rho0 -0.863701, Z7 -0.824136, Z9 -0.818051)  ln(oddD)/n=7.861917  v2S=935  12n-v2S=25  crit=-1.0511
+        LS: 18/18 primes in (sqrt n, n] ok; min gaps (Z7,Z9) = (7,9); v_q(rho0) in [-11,-5]; min v_q(Z7)=-4 min v_q(Z9)=-2; max exp in odd D (q>sqrt n) = 11
+  n=120: raw/n=-0.826818 (rho0 -0.827844, Z7 -0.830840, Z9 -0.826818)  ln(oddD)/n=7.999946  v2S=1415  12n-v2S=25  crit=-0.9926
+        LS: 26/26 primes in (sqrt n, n] ok; min gaps (Z7,Z9) = (7,9); v_q(rho0) in [-11,-5]; min v_q(Z7)=-4 min v_q(Z9)=-2; max exp in odd D (q>sqrt n) = 11
+        verifier E6.jsonl fingerprint (|rho0|, |Z7|, |Z9|, odd D, v2S): MATCH
+  n=160: raw/n=-0.817261 (rho0 -0.822397, Z7 -0.820280, Z9 -0.817261)  ln(oddD)/n=8.119634  v2S=1893  12n-v2S=27  crit=-0.8939
+        LS: 32/32 primes in (sqrt n, n] ok; min gaps (Z7,Z9) = (7,9); v_q(rho0) in [-11,-4]; min v_q(Z7)=-4 min v_q(Z9)=-2; max exp in odd D (q>sqrt n) = 11
+        verifier E6.jsonl fingerprint (|rho0|, |Z7|, |Z9|, odd D, v2S): MATCH
+
+== F. Lai-Sprang condition at q = n - 1 prime (recommended GAP 3 route)
+  n=80 q=79: (v_q rho0, v_q Z7, v_q Z9) = (-9, -2, 0)   [track claim: -9, >= -3, >= -1]
+  n=240 q=239: (v_q rho0, v_q Z7, v_q Z9) = (-9, -2, 0)   [track claim: -9, >= -3, >= -1]
+  n=360 q=359: (v_q rho0, v_q Z7, v_q Z9) = (-9, -2, 0)   [track claim: -9, >= -3, >= -1]
+
+SUMMARY: 0 failures, 33 s

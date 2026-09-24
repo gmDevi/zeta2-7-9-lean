@@ -100,7 +100,7 @@ receive their dependencies as hypotheses and can be elaborated independently wit
 | `Nonvanishing_of_LaiSprang` | `Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` | `NonvanishingLS` (**proved**) | L1 | '' | – |
 | `Stmt_Growth cfg g` | **GAP 1**: ∀ε>0, eventually `|ρ₀|,|Z₇|,|Z₉| ≤ e^{(g+ε)n}` | `Growth` (target `configE`, `gE`) | PF, CoeffVanish | growth | 5 |
 | `Stmt_Denominators cfg δ` | **GAP 2**: PNT → ∃D, eventually ClearsDen, `D‖D‖₂ ≤ e^{(δ+ε)n}` | `Denominators` (target `configE`, `deltaE`) | PF, CoeffVanish, CrudeInt | denominators | 5 |
-| `Stmt_Nonvanishing cfg` | **GAP 3**: ζ₂(7), ζ₂(9) rational → frequently `S_n ≠ 0` | `Nonvanishing` (target `configE`) | L1, IntegrandTaylor, Delta, DeltaFun | nonvanishing | 5 |
+| `Stmt_Nonvanishing cfg` | **GAP 3**: ζ₂(7), ζ₂(9) rational → frequently `S_n ≠ 0` | `Nonvanishing` (target `configE`) | L1, IntegrandTaylor, Delta, DeltaFun, PF, CoeffVanish, CrudeInt | nonvanishing | 5 |
 | `PairStatement` | main theorem | `Assembly.lean` (done) | JConv, L1, Valuation, Criterion, 3 gaps, PNT | – | – |
 
 Reused sibling statements and their proof files, which the pair `Main.lean` imports:
@@ -172,12 +172,19 @@ general rates.
 **GAP 3: nonvanishing.** `Stmt_Nonvanishing configE`.
 * The statement is conditional on rationality, which is all the criterion needs. An
   unconditional proof also works.
-* `S_n ≠ 0` at every tested `n ≤ 800`.
+* `S_n ≠ 0` at every tested `n ≤ 640` (at `n = 800` only the size was computed).
 * **Recommended route:** prove `Stmt_LaiSprangCond configE` (pure arithmetic about ρ₀, Z₇, Z₉),
-  then apply `Nonvanishing_of_LaiSprang`. At `n = 120, 200, 400`, *every* prime `q ∈ (√n, n]`
-  satisfies it, with `v_q Z₇ − v_q ρ₀ ≥ 6`, `v_q Z₉ − v_q ρ₀ ≥ 7` (typically 7 and 9) and
-  `v_q ρ₀ ∈ [−11, −5]`
-  (scratchpad `pair79/architect/laisprang_check.out`).
+  then apply `Nonvanishing_of_LaiSprang`. At `n = 40, 80, 120, 160, 200, 400`, *every* prime
+  `q ∈ (√n, n]` satisfies it, with `v_q Z₇ − v_q ρ₀ ≥ 6`, `v_q Z₉ − v_q ρ₀ ≥ 7` (typically 7 and
+  9) and `v_q ρ₀ ∈ [−11, −4]` (scratchpad `pair79/architect/laisprang_check.out`;
+  `python/pair_audit_independent.py`).
+* **Witness `q = n − 1`** (track `pair79/nonvanishing`, Theorem A): if `40 ∣ n` and `n − 1` is
+  prime then `v_{n−1}(ρ₀) = −9`, `v_{n−1}(Z₇) ≥ −3`, `v_{n−1}(Z₉) ≥ −1`; the audit engine finds
+  `(−9, −2, 0)` at `n = 80, 240, 360`. The subsequence is infinite by Dirichlet (Mathlib
+  `Nat.frequently_atTop_prime_and_modEq`); the proved lemmas `frequently_prime_forty_mul_sub_one`
+  and `frequently_prime_forty_mul_sub_one_gt` (in `NonvanishingLS.lean`) package it. The proof
+  uses the root trick at the central critical zeros, i.e. `Stmt_PF`, which is why the audit gave
+  `Nonvanishing_proof` the extra hypotheses `Stmt_PF`, `Stmt_CoeffVanish`, `Stmt_CrudeInt`.
 * Alternatives: Lai's dominant term along a subsequence, or a Casoratian.
 
 **GAP 4: valuation.** `Stmt_Valuation`. This is a proof obligation, not a hypothesis.
@@ -216,6 +223,27 @@ range) and checks:
 
 The full-run log is `python/pair_mirror_full.log`; 0 checks fail.
 
+**Independent audit engine (`python/pair_audit_independent.py`).** Written from scratch for the
+audit; it shares no code with `pair_mirror.py`, `lfam.py` or the verifier's `veng.py`. Run
+`python3 python/pair_audit_independent.py [quick|full]` (15 s / 35 s). The full-run log is
+`python/pair_audit_independent_full.log`; 0 checks fail. It checks:
+* `rcoef` against the product form of `R_n`. The identity `R_n(t) = Σ r_{i,k}(t+k)^{-i}` is
+  checked at `6n+6` points, which is a complete proof, for 40 small admissible `(n, h)`, and at
+  random points for `n = 20, 24, 40, 80`.
+* `Stmt_IntegrandTaylor` exactly at config E, `n = 40`. `Stmt_CrudeInt.coef`, the parity lemma and
+  `c₁ = c₂ = c₄ = c₆ = 0` for extreme shifts.
+* `J_s` from Bernoulli moments. This is independent of the ζ₂ cache and agrees with it to the full
+  working precision; `J_odd = 0`.
+* **End-to-end L1.** Riemann sums of `−R_n'''(x+½)` are computed from the *product form* and
+  converge 2-adically to `ρ₀ + 60c₃J₆ + 210c₅J₈`, which is built from the Lean-literal
+  definitions. For config E at `n = 40`, `v₂(R_N − S) = 458, 461, 464` for `N = 6, 9, 12`, with
+  `v₂(S) = 457`.
+* `Stmt_Valuation` uniformity over extreme admissible `h`, `n ≤ 80`: `max (12n − v₂S)/log₂(n+1) =
+  6.06`.
+* The gap data along config E. At `n = 120` and `160` it agrees bit for bit with the verifier's
+  `E6.jsonl` (`|ρ₀|`, `|Z₇|`, `|Z₉|`, odd denominator, `v₂S`).
+* The Lai–Sprang condition at `q = n − 1`.
+
 ## Design decisions
 
 1. **Gap statements are abstract and parametric.** The denominators are "some `D` with a bound
@@ -242,8 +270,14 @@ The full-run log is `python/pair_mirror_full.log`; 0 checks fail.
 * `README.md` has a pair paragraph.
 * `python/lfam_reference.py` was added: a verbatim copy of `lfam.py`, converted to LF line
   endings.
+* `scripts/audit.sh` (audit, 2026-09-24) uses the sibling's hardened census regex. It also catches
+  `axiom`/`opaque`/`unsafe` behind modifiers or attributes, and `Lean.trustCompiler`.
 * No change to `Zeta2Lean/Defs.lean`, `Statements.lean`, `Assembly.lean`, `Main.lean` or
   `Proofs/*`.
+* Sync note (2026-09-24): the sibling's five reused proof files are still stubs, identical to the
+  copies here. The sibling's `Defs.lean` has since gained two proved API lemmas (`mem_chains`,
+  `chainPrev_le`) that the pair does not use. When syncing proved files, also sync `Defs.lean` if
+  they use new API.
 
 ## Workflow for provers
 
@@ -257,3 +291,80 @@ The full-run log is `python/pair_mirror_full.log`; 0 checks fail.
 * Scratch work goes in `Zeta2Lean/Scratch/<yourname>_*.lean`. Delete it when done.
 * Gap tracks may add intermediate `Stmt`s in their own files. Ask the architect before changing
   a gap statement.
+
+## Audit (adversarial: mathematical faithfulness and Lean soundness, 2026-09-24)
+
+**Verdict: no false, vacuous or unfaithful definition or statement was found, and
+`Assembly.lean` and `Main.lean` are sound.** The fixes below are documentation and usability
+changes. No mathematical statement changed.
+
+**Definitions against the mathematics.** Each item was re-derived by hand.
+* `offsets n h = Ico(−h, n+h)` gives `(t+½−h)_{n+2h}`.
+* `Gser = ε⁶R_n(−k+ε)`: linear factor `n−2k+2ε`, numerator factors `u−k+½+ε`, and
+  `∏_{j≠k}(j−k+ε)^{−6}`. `rcoef` reads coefficient `6−i`.
+* `genIntegrand = −R'''(x+½)`, with weight `(i)₃`.
+* `genRho0` has weight `(i)₄` and `A_k^{(i+4)}`, from the translation formula.
+* `60 = (3)₃` and `210 = (5)₃`. `Z₇ = 60·768·c₃ = 46080·c₃` and `Z₉ = 210·4096·c₅ = 860160·c₅`,
+  since `ζ₂(7) = J₆/768` and `ζ₂(9) = J₈/4096`.
+* `R(−t−n) = −R(t)` gives `r_{i,n−k} = (−1)^{i+1} r_{i,k}`. `deg R = −5` gives `c₁ = 0`. So only
+  ζ₂(7) and ζ₂(9) survive.
+* Config E is `n = 40m`, `h = m·(−17,1,2,3,5,6)`. This is the same sign convention as the
+  exploration's `wp_run.py` and `lfam.py` (`num = (1, 2, −h, n+2h, e)`).
+* `Admissible` is exactly the common hypothesis of the four gap tracks: `Σh = 0`, `N_m ≥ 0`, and
+  at least five `h_m ≥ 0`.
+* No power of 2 is built in. The sign relative to `lfam` is `−`.
+
+**Numerical checks.** `python/pair_audit_independent.py` found 0 failures; see "Numerical mirror"
+above. `pair_mirror.py --quick` still has 0 failures.
+
+**Gap statements.** The finite-`n` evidence is consistent with each statement being true, and each
+statement is in the form `main_of_stmts` consumes. Each gap is used once, in the stated
+eventual or frequent form. The `∀ ε > 0` form is the natural limsup form; the assembly uses
+`ε = (12 log 2 − g − δ)/4`.
+* Growth: `raw/n ≤ −0.769` for every tested `n ∈ [40, 800]`; the target is `gE = −0.72`. The growth
+  track's computer-assisted bound, rate `−0.7812` for `n ≡ 0 (40)`, `n ≥ 2000`, has exactly this
+  shape.
+* Denominators: with the minimal `D`, `ln(odd D)/n ≤ 8.43` up to `n = 640`. The denominators
+  track's provable savings `R_E ≥ 1.43` give `δ ≤ 8.57 < deltaE = 9`.
+* Nonvanishing: `S_n ≠ 0` for every tested `n ≤ 640`, and the Lai–Sprang condition holds at
+  `q = n − 1`.
+* Valuation: this is **uniform** over all admissible `(n, h)`, which is stronger than the assembly
+  needs, but it is true. The valuation track's Theorem G4 gives
+  `v₂(S) ≥ 12n + 9 − Σ s₂(N_m) − 4λ`. Numerically, `(12n − v₂S)/log₂(n+1) ≤ 6.06`.
+* Margin: `gE + deltaE = 8.28 < 12 log 2 = 8.3178`. This leaves only `0.038`, but
+  `zeta2_7_9_not_both_rational_of_gaps` accepts any `g + δ < 12 log 2`.
+
+**Lean soundness.**
+* `#print axioms` for `main_of_stmts`, `Nonvanishing_of_LaiSprang`, the new Dirichlet lemmas,
+  `linear_form_zeta`, `Sn_eq_Lform`, `marginE` and `admissible_E` gives
+  `[propext, Classical.choice, Quot.sound]`. The main theorems add `sorryAx`, which comes only from
+  the stubs.
+* No auto-bound implicits: every pair definition and `Stmt` elaborates when ascribed its intended
+  type.
+* Inside `namespace Zeta2.Pair`, the short names `Stmt_PF`, `Stmt_L1`, `Stmt_CoeffVanish`, `rho0`,
+  `integrand`, `rcoef`, `Rser` and `Z7` resolve to the pair objects, even under `open Zeta2`.
+  This was checked by `rfl`.
+* Junk values:
+  - Every `PowerSeries` `⁻¹` has a non-zero constant coefficient. For `Gser` it is
+    `∏_{j≠k}(j−k)⁶`. `Rser` is used only under `y + j ≠ 0`, or at `y = x + ½`.
+  - The ℕ-subtractions `6 − i` and `n − k` are guarded.
+  - Casts to `ℚ` happen before any subtraction. There is no `zpow`.
+  - `limUnder` is certified: `J` by the first conjunct of `PairStatement`, and `Sn` only through
+    `Sn_eq_Lform`.
+  - Empty products are handled correctly: `N_m = 0` and `n = 0`.
+* Compiled probes: `rcoef 0 0 5 0 = 2`, `rcoef 0 0 6 0 = 0`, `Admissible 0 h → h = 0`,
+  `configE.h 3 = (−51, 3, 6, 9, 15, 18)`, and `offsets 120 (−51) = Ico 51 69`.
+
+**Changes made by the audit.**
+1. `Nonvanishing_proof` now takes `Stmt_PF`, `Stmt_CoeffVanish` and `Stmt_CrudeInt` as extra
+   hypotheses, and `Main.lean` passes them. The file imports `NonvanishingLS`, and its docstring
+   gives the `q = n − 1` route. The reason is usability: that route's root trick needs `Stmt_PF`.
+2. `NonvanishingLS.lean` has the new proved lemmas `frequently_prime_forty_mul_sub_one` and
+   `frequently_prime_forty_mul_sub_one_gt` (Dirichlet: `40m − 1` is prime infinitely often).
+3. Docstring corrections:
+   - `Admissible`: the critical points are `c ∈ [0, n)`, not `[0, n/2)`.
+   - `v_q(ρ₀) ∈ [−11, −4]`: `−4` occurs at `n = 160`.
+   - "`S_n ≠ 0` for `n ≤ 800`" is now `n ≤ 640`; at 800 only the size was computed.
+   - The `Stmt_LaiSprangCond` docstring now names the witness `q = n − 1`.
+4. `scripts/audit.sh` is hardened, as in the sibling.
+5. `python/pair_audit_independent.py` and its full-run log were added.
