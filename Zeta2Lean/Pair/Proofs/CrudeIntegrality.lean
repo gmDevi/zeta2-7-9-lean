@@ -37,7 +37,7 @@ and `d_n ∣ d_{2n}` (`Nat.lcmUpto` is monotone in divisibility):
 and configuration E at `n = 40`, `80`).
 
 **Formalisation (complete, no proof holes; axioms: propext, Classical.choice, Quot.sound).**
-Modelled on the sibling's `Zeta2Lean/Proofs/DenomL2a.lean`.
+Modelled on `Zeta2Lean/Proofs/DenomL2a.lean` of the `{7,9,11}` repository.
 * `crudeDInt d := crudeIntPS.comap (rescale d)` is the subring of `d`-integral series
   (`crude_mem_DInt_iff`: `∀ j, ∃ z : ℤ, d^j * coeff j A = z`).
 * `crude_geom_mem`: `C c · (C c + X)⁻¹ ∈ crudeDInt N` for an integer `c ≠ 0` with `c ∣ N`

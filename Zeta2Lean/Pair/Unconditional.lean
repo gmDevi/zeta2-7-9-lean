@@ -10,8 +10,9 @@ set_option linter.style.header false
 three gap statements (Growth, Denominators, Nonvanishing) and every routine lemma plugged in
 (configuration E: `h = (n/40)(-17, 1, 2, 3, 5, 6)`, rates `gE = -0.72`, `deltaE = 9`).  The prime
 number theorem is `Zeta2.PNT_proof` (`Cited/PNT.lean`: Wiener–Ikehara, vendored from open
-mathlib4 PRs, as in the sibling `{7,9,11}` project).  Composing the two gives the theorem below;
-its `#print axioms` lists only `propext`, `Classical.choice`, `Quot.sound`.
+mathlib4 PRs, as in the `{7,9,11}` repository).  Composing the two gives the theorem below; its
+`#print axioms` lists only `propext`, `Classical.choice`, `Quot.sound`.  `Solution.lean` restates
+it for Comparator as `zeta2_7_9_not_both_rational_palomar`.
 -/
 
 namespace Zeta2.Pair
@@ -24,7 +25,7 @@ theorem zeta2_7_9_not_both_rational_unconditional :
       ¬ ((∃ q : ℚ, zeta2 7 = q) ∧ (∃ q : ℚ, zeta2 9 = q)) :=
   zeta2_7_9_not_both_rational_uncond PNT_proof
 
-/-- The same, stated with the frozen `PairStatement`. -/
+/-- The same, stated with `PairStatement` (`Pair/Statements.lean`). -/
 theorem pairStatement_unconditional : PairStatement :=
   zeta2_7_9_not_both_rational_unconditional
 

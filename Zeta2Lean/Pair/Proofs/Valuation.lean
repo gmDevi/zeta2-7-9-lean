@@ -1,14 +1,14 @@
 import Zeta2Lean.Pair.Statements
 
 /-!
-# GAP 4: 2-adic smallness `v₂(S_n) ≥ 12 n - O(log n)` (track pair79/valuation, Theorem G4)
+# GAP 4: 2-adic smallness `v₂(S_n) ≥ 12 n - O(log n)` (`docs/proof.md` §5, Theorem G4)
 
 gap: 'valuation' (GAP 4 of the pair programme; a proof obligation of `Pair/Main.lean`, not a
 hypothesis).
 
 **Task.** Prove `Stmt_Valuation` from `Stmt_IntegrandTaylor` (pair), `Stmt_Delta` and
-`Stmt_DeltaFun` (reused from the `{7,9,11}` project): there are `c : ℝ`, `A : ℕ` such that for every
-admissible `(n, h)` and every limit `I` of the Riemann sums of `integrand n h`,
+`Stmt_DeltaFun` (reused from the `{7,9,11}` repository): there are `c : ℝ`, `A : ℕ` such that for
+every admissible `(n, h)` and every limit `I` of the Riemann sums of `integrand n h`,
 `‖I‖ · 2^{12n} ≤ c (n+1)^A`.  (Unnormalised: `R_n` has no `2^{12n}` prefactor.)
 
 **Status.** Complete, with `c = 6^10`, `A = 10`: `v₂(I) ≥ 12n - 10 ⌊log₂ 6n⌋` for every admissible
@@ -17,7 +17,7 @@ Quot.sound]`.  Used: `Stmt_Delta.{sumAll, smulAll, mulAll, monoAll, riemannAll}`
 `Stmt_DeltaFun.binom`; the exponent-6 analogue of `hcoefDelta` is re-proved here (`vgood_H6`).
 Of `Admissible` only `∑ h_m = 0` and `n + 2 h_m ≥ 0` are used (no sign condition on the shifts).
 
-**Informal proof** (Theorem G4 of `pair79/valuation/proof.md`, with a uniform logarithmic loss:
+**Informal proof** (Theorem G4 of `docs/proof.md` §5, with a uniform logarithmic loss:
 `L := ⌊log₂ 6n⌋ ≥ ⌊log₂ N_m⌋`, because `N_m := n + 2h_m ≤ 6n` by `∑ h = 0`, `N ≥ 0`).
 1. *Product form.* By `Stmt_IntegrandTaylor`, `integrand n h x = -6 [ε³] R_n(x + 1/2 + ε)`, and
    `R_n(x + 1/2 + ε) = (2x+1+n+2ε) · ∏_m (T_m + ε)^{\underline{N_m}} · 2^{6n+6} H(2ε)`, where
@@ -52,7 +52,7 @@ Of `Admissible` only `∑ h_m = 0` and `n + 2 h_m ≥ 0` are used (no sign condi
   `Finset.sum_antidiagonal_choose_succ_mul`), `coeff_runPS`, `sco`, `norm_sco` (coefficient bounds
   `CBd` of products, `fall_succ_eq`), `serGood_run`.
 * Linear factor: `serGood_lin`.  `H`-factor: `H6`, `val_H6_coeff`, `vgood_inv_odd`, `vgood_H6`
-  (the sibling's `DeltaFunctions.lean` argument with exponent `6`), `serGood_H`.
+  (the argument of `Zeta2Lean/Proofs/DeltaFunctions.lean` with exponent `6`), `serGood_H`.
 * Product form: `offsets_prod` (the block `[-h, n+h)` is the run of length `n + 2h` ending at
   `x + n + h`), `val_den` (`(t + 1/2)_{n+1}^{-6} = 2^{6n+6} H(2ε)`), `val_Rser`.
 * `val_legendre` (`sub_one_mul_padicValNat_factorial`); assembly in `Valuation_proof`.

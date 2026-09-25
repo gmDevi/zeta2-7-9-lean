@@ -43,9 +43,9 @@ becomes `(C (2y+n) + C 2 · ε) · numSer n h y`.  Multiply by the inverse of
 `C r_{i,k} (C(y+k)+ε)^{6-i} ∏_{j≠k} (C(y+j)+ε)^6 · W⁻¹` equals `C r_{i,k} · ((C (y+k) + ε)^i)⁻¹`,
 checked with `PowerSeries.eq_inv_iff_mul_eq_one` since `(C(y+k)+ε)^{6-i} (C(y+k)+ε)^i ∏_{j≠k} … = W`.
 
-Adapted from the sibling project's proved `Zeta2Lean/Proofs/PartialFractions.lean` (uniform `(8,3)`
-family); the numerator, the pole order `6` and the degree count (which here needs admissibility)
-differ.  Helper names live in the namespace `Zeta2.Pair.PairPF` and are `private`.
+Adapted from `Zeta2Lean/Proofs/PartialFractions.lean` of the `{7,9,11}` repository (uniform
+`(8,3)` family); the numerator, the pole order `6` and the degree count (which here needs
+admissibility) differ.  Helper names live in the namespace `Zeta2.Pair.PairPF` and are `private`.
 
 **Numerical check.** `python/pair_mirror.py`, section "Stmt_PF" (`poly` for `n ≤ 5`, `series` at
 random rational `y`, random admissible `h`); `python/pair_audit_independent.py` checks the identity

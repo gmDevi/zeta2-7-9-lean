@@ -2,16 +2,20 @@
 
 Lean 4 + Mathlib formalisation plan for the **pair** candidate: the shifted well-poised
 (Rhin–Viola-type) deformation of the Lai–Sprang–Zudilin half-shift family, configuration E.
-This project is a copy of `zeta2-lean` (the `{7,9,11}` theorem, `BLUEPRINT.md`); the Volkenborn
+This project started as a copy of the `{7,9,11}` repository
+(https://github.com/gmDevi/zeta2-7-9-11-lean, called "the sibling" below); the Volkenborn
 infrastructure, the criterion and the Δ-calculus are **reused** from it. Everything pair-specific
-lives in `Zeta2Lean/Pair/` (namespace `Zeta2.Pair`).
+lives in `Zeta2Lean/Pair/` (namespace `Zeta2.Pair`). The informal proof is `docs/proof.md`.
 
 Status (2026-09-25; census in `STATUS_PAIR.md`, which supersedes the status remarks below):
 **the theorem is proved with no hypotheses**, `Zeta2.Pair.zeta2_7_9_not_both_rational_unconditional`
 (`Zeta2Lean/Pair/Unconditional.lean`, axioms `propext`, `Classical.choice`, `Quot.sound`). All four
 gaps are proved (GAP 1 growth, GAP 2 denominators, GAP 3 nonvanishing, GAP 4 valuation), and PNT
-is proved (`Zeta2Lean/Cited/PNT.lean`, Wiener–Ikehara vendored from the sibling). The sections
-below keep the original plan; where they call a gap "open", read "proved".
+is proved (`Zeta2Lean/Cited/PNT.lean`, Wiener–Ikehara vendored as in the sibling). For publication
+the files of the sibling that the pair does not use were removed (see "Changes to the copied
+infrastructure"). The sections below keep the original plan; where they call a gap "open" or a
+file a "stub", read "proved". Paths such as `pair79/...` refer to the working directory of the
+research session and are not part of this repository.
 
 ## Main theorem (`Zeta2Lean/Pair/Main.lean`)
 
@@ -27,14 +31,13 @@ Variants in the same file:
 * `zeta2_7_9_not_both_rational_of_gaps`: any `cfg : Config`, any rates `g δ` with
   `g + δ < 12 log 2`. Use it if the gap tracks prove other constants or switch configuration.
 * `zeta2_7_9_not_both_rational_LS`: GAP 3 replaced by the arithmetic `Stmt_LaiSprangCond configE`.
-* `zeta2_7_9_not_both_rational_uncond (hPNT)`: the gap proof files plugged in. This is the final
-  target; its `#print axioms` shows `sorryAx` until every file is proved.
+* `zeta2_7_9_not_both_rational_uncond (hPNT)`: the gap proof files plugged in, with PNT as the
+  only hypothesis; `Pair/Unconditional.lean` discharges it.
 
 `zeta2 s = J (s-1) / ((s-1) 2^s)`, and `J` is the Volkenborn integral of `(t+1/2)^{-s}`, as in the
-sibling (LSZ Lemma 2.8, cited normalisation, see `BLUEPRINT.md`).
-`#print axioms` currently shows `propext, sorryAx, Classical.choice, Quot.sound`. For the main
-theorem, the `sorryAx` comes only from the `Valuation_proof` stub (GAP 4). With `Stmt_Valuation`
-as a hypothesis, the assembly has only `propext, Classical.choice, Quot.sound` (`STATUS_PAIR.md`).
+sibling (LSZ Lemma 2.8, cited normalisation; `Zeta2Lean/Defs.lean`).
+`#print axioms` of all these theorems now shows only `propext, Classical.choice, Quot.sound`
+(`STATUS_PAIR.md`); `Pair/Unconditional.lean` removes the last hypothesis, PNT.
 
 ## The family (`Pair/Defs.lean`)
 
@@ -67,9 +70,9 @@ For `n : ℕ` and `h : Fin 6 → ℤ`:
 
 ## Cited hypotheses
 
-Only `PNT_Stmt` (`ψ(x)/x → 1`, reused from `Zeta2Lean/Statements.lean`). Unlike the sibling, the
-pair does **not** assume Andrews' transformation. A gap track that needs it can cite the sibling's
-`Andrews_Stmt`.
+Only `PNT_Stmt` (`ψ(x)/x → 1`, reused from `Zeta2Lean/Statements.lean`), now proved
+(`Zeta2Lean/Cited/PNT.lean`). Unlike the sibling, the pair does **not** use Andrews'
+transformation.
 
 ## Architecture
 
@@ -77,8 +80,9 @@ pair does **not** assume Andrews' transformation. A gap track that needs it can 
 Zeta2Lean/Pair/Defs.lean        definitions (family, coefficients, linear form, Config, configE, targets)
 Zeta2Lean/Pair/Statements.lean  one Stmt per lemma; the 3 gap Stmts are parametrised by (cfg, g/δ)
 Zeta2Lean/Pair/Assembly.lean    main_of_stmts (complete; generic in cfg, g, δ), marginE, bound_core, ...
-Zeta2Lean/Pair/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X   (7 proved; stubs: Valuation + the 3 gaps)
+Zeta2Lean/Pair/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X   (all proved)
 Zeta2Lean/Pair/Main.lean        wiring + 4 variants of the main theorem + #print axioms
+Zeta2Lean/Pair/Unconditional.lean  the theorem with no hypotheses (PNT from Zeta2Lean/Cited/PNT.lean)
 python/pair_mirror.py           exact mirror of Pair/Defs.lean + numerical check of every Stmt
 python/lfam_reference.py        verbatim copy of the exploration engine lfam.py (independent cross-check)
 ```
@@ -97,12 +101,12 @@ receive their dependencies as hypotheses and can be elaborated independently wit
 | `Stmt_L1` | `S_n = ρ₀ + 60c₃J₆ + 210c₅J₈` (only ζ₂(7), ζ₂(9)) | `LinearForm` (**proved**) | GenLinearForm, CoeffVanish | '' | 2 |
 | `Stmt_IntegrandTaylor` | `integrand n h x = -6 [ε³] R_n(x+½+ε)` (product form) | `IntegrandTaylor` (**proved**) | PF | '' | 2 |
 | `Stmt_CrudeInt` | `2^{6n}(k!(n-k)!)^6 d_n^{6-i} r_{i,k} ∈ ℤ`; `Dcrude n = 2^{6n} n!^6 d_{2n}^{10}` clears ρ₀, Z₇, Z₉ | `CrudeIntegrality` (**proved**) | – | '' | 3 |
-| `Stmt_Valuation` | **GAP 4**: `‖S_n‖ 2^{12n} ≤ c (n+1)^A`, all admissible `(n,h)` | `Valuation` | IntegrandTaylor, Delta, DeltaFun (sibling) | valuation (expected routine) | 4 |
+| `Stmt_Valuation` | **GAP 4**: `‖S_n‖ 2^{12n} ≤ c (n+1)^A`, all admissible `(n,h)` | `Valuation` (**proved**) | IntegrandTaylor, Delta, DeltaFun (sibling) | valuation | 4 |
 | `Stmt_LaiSprangCond cfg` | ∀B, frequently ∃ prime q > B: `v_q ρ₀ < v_q Z₇, v_q Z₉` | (hypothesis of the `_LS` variant) | – | nonvanishing (alternative) | 5 |
 | `Nonvanishing_of_LaiSprang` | `Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg` | `NonvanishingLS` (**proved**) | L1 | '' | – |
-| `Stmt_Growth cfg g` | **GAP 1**: ∀ε>0, eventually `|ρ₀|,|Z₇|,|Z₉| ≤ e^{(g+ε)n}` | `Growth` (target `configE`, `gE`) | PF, CoeffVanish | growth | 5 |
-| `Stmt_Denominators cfg δ` | **GAP 2**: PNT → ∃D, eventually ClearsDen, `D‖D‖₂ ≤ e^{(δ+ε)n}` | `Denominators` (target `configE`, `deltaE`) | PF, CoeffVanish, CrudeInt | denominators | 5 |
-| `Stmt_Nonvanishing cfg` | **GAP 3**: ζ₂(7), ζ₂(9) rational → frequently `S_n ≠ 0` | `Nonvanishing` (target `configE`) | L1, IntegrandTaylor, Delta, DeltaFun, PF, CoeffVanish, CrudeInt | nonvanishing | 5 |
+| `Stmt_Growth cfg g` | **GAP 1**: ∀ε>0, eventually `|ρ₀|,|Z₇|,|Z₉| ≤ e^{(g+ε)n}` | `Growth` (**proved** for `configE`, `gE`) | PF, CoeffVanish | growth | 5 |
+| `Stmt_Denominators cfg δ` | **GAP 2**: PNT → ∃D, eventually ClearsDen, `D‖D‖₂ ≤ e^{(δ+ε)n}` | `Denominators` (**proved** for `configE`, `deltaE`) | PF, CoeffVanish, CrudeInt | denominators | 5 |
+| `Stmt_Nonvanishing cfg` | **GAP 3**: ζ₂(7), ζ₂(9) rational → frequently `S_n ≠ 0` | `Nonvanishing` (**proved** for `configE`) | L1, IntegrandTaylor, Delta, DeltaFun, PF, CoeffVanish, CrudeInt | nonvanishing | 5 |
 | `PairStatement` | main theorem | `Assembly.lean` (done) | JConv, L1, Valuation, Criterion, 3 gaps, PNT | – | – |
 
 Reused sibling statements and their proof files, which the pair `Main.lean` imports:
@@ -142,8 +146,9 @@ Suppose `ζ₂(7) = q₇` and `ζ₂(9) = q₉` are rational.
 
 ## The gaps: exact form, targets, status
 
-All three are hypotheses of the main theorem and are stated for a general configuration and
-general rates.
+All three were hypotheses of the main theorem while they were open, and are stated for a general
+configuration and general rates. All three are now proved for configuration E; this section keeps
+the plan as it was written, and the docstrings of the proof files describe the proofs.
 
 **GAP 1: growth.** `Stmt_Growth configE gE`, target `g = -0.72`.
 * Any `g` with `g + δ < 8.3178` works. With the residue-level `δ ≈ 8.91` one needs `g < -0.59`.
@@ -267,15 +272,17 @@ audit; it shares no code with `pair_mirror.py`, `lfam.py` or the verifier's `ven
 
 ## Changes to the copied infrastructure
 
-* `Zeta2Lean.lean` (library root) now also imports `Zeta2Lean.Pair.Main`, so plain `lake build`
-  builds both theorems.
-* `README.md` has a pair paragraph.
+* `Zeta2Lean.lean` (library root) imported `Zeta2Lean.Pair.Main` besides the sibling's
+  `Zeta2Lean.Main` during the development; since the cleanup below it imports only
+  `Zeta2Lean.Pair.Main` and `Zeta2Lean.Pair.Unconditional`.
+* `README.md` describes the pair result (rewritten for publication).
 * `python/lfam_reference.py` was added: a verbatim copy of `lfam.py`, converted to LF line
   endings.
 * `scripts/audit.sh` (audit, 2026-09-24) uses the sibling's hardened census regex. It also catches
   `axiom`/`opaque`/`unsafe` behind modifiers or attributes, and `Lean.trustCompiler`.
-* No change to `Zeta2Lean/Defs.lean`, `Statements.lean`, `Assembly.lean` or `Main.lean`. In
-  `Proofs/*`, only the five reused files changed, by the sync below.
+* During the development there was no change to `Zeta2Lean/Defs.lean`, `Statements.lean`,
+  `Assembly.lean` or `Main.lean`; in `Proofs/*`, only the five reused files changed, by the sync
+  below.
 * Sync (prove round 1, 2026-09-24):
   * The five reused proof files (`JConvergence`, `Translation`, `Criterion`, `DeltaCalculus`,
     `DeltaFunctions`) were replaced by the sibling's proved versions. They are byte-identical,
@@ -283,14 +290,26 @@ audit; it shares no code with `pair_mirror.py`, `lfam.py` or the verifier's `ven
   * They compile against this copy's `Defs.lean`. The sibling's `Defs.lean` differs only by two
     API lemmas, `mem_chains` and `chainPrev_le`, which these files do not use. So `Defs.lean` was
     not synced.
-  * The other 19 `{7,9,11}` proof files in this copy are stale stubs from the fork, and the pair
-    does not use them. If they are ever synced, sync the sibling's `Defs.lean` with them.
+  * The other 19 `{7,9,11}` proof files in this copy were stale stubs from the fork, and the pair
+    did not use them.
+* Cleanup for publication (2026-09-25). Removed, after checking with `lean --deps` that nothing in
+  the import closure of `Zeta2Lean.Pair.Unconditional` uses them: the sibling's `Zeta2Lean/Main.lean`
+  and `Zeta2Lean/Assembly.lean`, the 19 stale stubs in `Zeta2Lean/Proofs/`, `BLUEPRINT.md`, and the
+  sibling's Python mirror (`python/mirror.py`, its log, `python/lf_reference.py`). The definitions
+  and statements of the `{7,9,11}` construction were removed from `Zeta2Lean/Defs.lean` and
+  `Zeta2Lean/Statements.lean` (the pair uses none of them); the six trusted definitions and every
+  kept declaration are unchanged. A declaration-level comparison before and after (the type and
+  value hash of every constant of the 30 project modules in the closure) showed no changed or added
+  constant and 92 removed ones, all from those two files. The root `Zeta2Lean.lean` imports
+  `Zeta2Lean.Pair.Main` and `Zeta2Lean.Pair.Unconditional` only, and every remaining module is in
+  its import closure. Docstrings were updated (gaps proved, no local paths). `Challenge.lean`,
+  `Solution.lean`, `comparator.json`, `LICENSE` and `formalization.yaml` were added for Palomar, and
+  `lakefile.toml` gained the `Challenge` and `Solution` libraries.
 
 ## Workflow for provers
 
-* Elaborate one file:
-  `wsl -d Ubuntu --cd /home/mdevi/zeta2-pair-lean -- bash scripts/check.sh Zeta2Lean/Pair/Proofs/Foo.lean`.
-* Build: `scripts/build.sh Zeta2Lean.Pair.Main`. Census: `scripts/audit.sh`.
+* Elaborate one file: `bash scripts/check.sh Zeta2Lean/Pair/Proofs/Foo.lean`.
+* Build: `bash scripts/build.sh Zeta2Lean.Pair.Main`. Census: `bash scripts/audit.sh`.
 * Never edit `Pair/Defs.lean` or `Pair/Statements.lean`. If a statement looks wrong or
   unprovable, report it to the architect with a counterexample from `pair_mirror.py`.
 * Work in `namespace Zeta2.Pair`, where short names refer to the pair objects. Put helper lemmas
@@ -344,8 +363,8 @@ eventual or frequent form. The `∀ ε > 0` form is the natural limsup form; the
 **Lean soundness.**
 * `#print axioms` for `main_of_stmts`, `Nonvanishing_of_LaiSprang`, the new Dirichlet lemmas,
   `linear_form_zeta`, `Sn_eq_Lform`, `marginE` and `admissible_E` gives
-  `[propext, Classical.choice, Quot.sound]`. The main theorems add `sorryAx`, which comes only from
-  the stubs.
+  `[propext, Classical.choice, Quot.sound]`. At the time of the audit the main theorems added
+  `sorryAx`, which came only from the then unproved stubs.
 * No auto-bound implicits: every pair definition and `Stmt` elaborates when ascribed its intended
   type.
 * Inside `namespace Zeta2.Pair`, the short names `Stmt_PF`, `Stmt_L1`, `Stmt_CoeffVanish`, `rho0`,

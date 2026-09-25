@@ -14,8 +14,8 @@ gap: 'nonvanishing'.
 **Task.** Prove `Stmt_Nonvanishing configE`: if `ζ₂(7)` and `ζ₂(9)` are both rational, then for
 infinitely many `m` every limit `I` of the Riemann sums of `integrand (40m) (m · hE)` is non-zero.
 
-**Route** (track `scratchpad/pair79/nonvanishing/proof.md`, Theorem A, with the verifier's
-simplification (i): the exact parity relation replaces the root trick).  We prove the arithmetic
+**Route** (`docs/proof.md` §7, Theorem A, in the form written there: the exact parity relation
+(3.2) replaces the root trick of the original nonvanishing track).  We prove the arithmetic
 Lai–Sprang condition `LaiSprangCond_proof : Stmt_CoeffVanish → Stmt_LaiSprangCond configE` and
 conclude with `Nonvanishing_of_LaiSprang`.  Given `B`, take the `m` with `q := 40m - 1` prime and
 `q > max(B, 10⁹)` (Dirichlet, `frequently_prime_forty_mul_sub_one_gt`).  Then (`n = 40m = q + 1`)

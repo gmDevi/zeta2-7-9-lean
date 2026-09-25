@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Replay, through the Lean kernel (leanchecker), the declarations of every project module in the
-# import closure of a root module (default Zeta2Lean.Pair.Unconditional), ONE module at a time
-# (memory).  The modules must already be built (bash scripts/build.sh <root>).
-# usage: wsl -d Ubuntu --cd /home/mdevi/zeta2-pair-lean -- bash scripts/kernels.sh [Root.Module]
+# import closure of a root module (default Zeta2Lean.Pair.Unconditional; `Solution` also works),
+# ONE module at a time (each run loads Mathlib, about 6-7 GB).  The modules must already be built
+# (bash scripts/build.sh).
+# usage: bash scripts/kernels.sh [Root.Module]
 export PATH="$HOME/.elan/bin:$PATH"
-cd "$HOME/zeta2-pair-lean" || exit 2
+cd "$(dirname "$0")/.." || exit 2
 TC=$(dirname "$(elan which lean)")
 root="${1:-Zeta2Lean.Pair.Unconditional}"
 declare -A seen

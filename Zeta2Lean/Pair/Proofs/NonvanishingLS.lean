@@ -139,8 +139,8 @@ theorem Nonvanishing_of_LaiSprang (cfg : Config) (hL1 : Stmt_L1) (hLS : Stmt_Lai
 
 /-! ### The subsequence `40 m - 1` prime (audit addition, 2026-09-24)
 
-For configuration E (`n = 40 m`) the natural Lai–Sprang prime is `q = n - 1` (track
-`pair79/nonvanishing`, Theorem A: `v_q(ρ₀) = -9 < v_q(Z₇), v_q(Z₉)`).  Dirichlet's theorem
+For configuration E (`n = 40 m`) the natural Lai–Sprang prime is `q = n - 1` (`docs/proof.md`
+§7, Theorem A: `v_q(ρ₀) = -9 < v_q(Z₇), v_q(Z₉)`).  Dirichlet's theorem
 (Mathlib `Nat.frequently_atTop_prime_and_modEq`, primes `≡ 39 (mod 40)`) makes that subsequence
 infinite. -/
 

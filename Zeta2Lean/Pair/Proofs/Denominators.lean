@@ -17,14 +17,14 @@ clears `ρ₀, Z₇, Z₉` for **every** `m` (`Dfull_clears`), and, assuming PNT
 eventually `D m · ‖D m‖₂ = Dodd n h ≤ exp((8.97 + ε) n)` (`Dfull_mul_norm`, `log_sum_bound`,
 `margin_T`), which gives the target `deltaE = 9`.
 
-**Route.** The *residue level* of the verified informal proof (`pair79/proof_pair.md` §4.1–4.5;
-`pair79/denominators/proof.md` §§1–5 and 8.1–8.5, i.e. Theorem 1 (a)–(c) and Theorem 2 with the
-plain residue function `s(x) = min_y v(x, y)`).  No second- or third-order refinement is used:
-the residue level already gives `10 - R⁽⁰⁾ ≈ 8.91 < 9`.  The exponent `Eexp n h q` is the
-first-order bound with valuations capped at `M = ⌊log_q 2n⌋`, `max_k (10 M - W_k)`; for
-`q ≤ n < q²/2` (`M = 1`) it is the residue level `10 - min_k W_k` with the level-one count
-`W_k = Wlev n h q k = v(n/q, k/q)` of proof.md Lemma 2.2 (the `δ`-factor `n - 2k` is not used),
-and for `q > n` it is `0`.
+**Route.** The *residue level* of the verified informal proof (`docs/proof.md` §4.1–4.5, i.e.
+Theorem D (a)–(c) and Theorem D∞ with the plain residue function `s(x) = min_y v(x, y)`; they are
+Theorem 1 (a)–(c) and Theorem 2 of the denominators track that §4 summarises).  No second- or
+third-order refinement is used: the residue level already gives `10 - R⁽⁰⁾ ≈ 8.91 < 9`.  The
+exponent `Eexp n h q` is the first-order bound with valuations capped at `M = ⌊log_q 2n⌋`,
+`max_k (10 M - W_k)`; for `q ≤ n < q²/2` (`M = 1`) it is the residue level `10 - min_k W_k` with
+the level-one count `W_k = Wlev n h q k = v(n/q, k/q)` of `docs/proof.md` Lemma D3 (the
+`δ`-factor `n - 2k` is not used), and for `q > n` it is `0`.
 
 ## Local part (every odd prime `q`)
 

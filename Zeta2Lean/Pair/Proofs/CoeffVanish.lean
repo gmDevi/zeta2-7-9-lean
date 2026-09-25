@@ -41,7 +41,8 @@ gap: '' (routine).
 `Polynomial.coeff_eq_zero_of_natDegree_lt`, `Polynomial.Monic.coeff_natDegree`,
 `Polynomial.monic_prod_of_monic`, `Polynomial.monic_X_add_C`, `Polynomial.natDegree_prod_of_monic`,
 `Polynomial.finset_sum_coeff`, `Polynomial.coeff_C_mul`, `Even.neg_one_pow`, `Odd.neg_one_pow`.
-The sibling's `Zeta2Lean/Proofs/CoeffVanish.lean` has the same structure for `a = 8`.
+`Zeta2Lean/Proofs/CoeffVanish.lean` of the `{7,9,11}` repository has the same structure for
+`a = 8`.
 
 **Numerical check.** `python/pair_mirror.py`, section "Stmt_CoeffVanish".
 -/

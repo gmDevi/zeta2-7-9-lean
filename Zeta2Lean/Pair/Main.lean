@@ -19,23 +19,25 @@ import Zeta2Lean.Pair.Proofs.Nonvanishing
 set_option linter.style.header false
 
 /-!
-# Zeta2Lean.Pair.Main — at least one of `ζ₂(7)`, `ζ₂(9)` is irrational (modulo three open gaps)
+# Zeta2Lean.Pair.Main — at least one of `ζ₂(7)`, `ζ₂(9)` is irrational, assuming PNT
 
-Wires the proofs of the routine statements into `main_of_stmts` (`Pair/Assembly.lean`).
+Wires the proofs of the routine statements and of the three gap statements into
+`main_of_stmts` (`Pair/Assembly.lean`).  The prime number theorem remains a hypothesis here; it is
+discharged in `Pair/Unconditional.lean`.
 
 * `zeta2_7_9_not_both_rational_of_gaps` — any configuration, any rates `g + δ < 12 log 2`;
-  hypotheses: PNT (cited) and the three open gaps `Stmt_Growth cfg g`, `Stmt_Denominators cfg δ`,
+  hypotheses: PNT and the three gap statements `Stmt_Growth cfg g`, `Stmt_Denominators cfg δ`,
   `Stmt_Nonvanishing cfg`.
-* `zeta2_7_9_not_both_rational` — **the main theorem**: configuration E with the target rates
-  `gE = -0.72`, `deltaE = 9` (`marginE`).
+* `zeta2_7_9_not_both_rational` — configuration E with the rates `gE = -0.72`, `deltaE = 9`
+  (`marginE`), with the three gap statements as hypotheses.
 * `zeta2_7_9_not_both_rational_LS` — the same with GAP 3 replaced by the purely arithmetic
   Lai–Sprang condition `Stmt_LaiSprangCond configE`.
-* `zeta2_7_9_not_both_rational_uncond` — plugs in the gap proof files as well: the final target
-  (its `#print axioms` shows `sorryAx` until every gap is closed).
+* `zeta2_7_9_not_both_rational_uncond` — the gap proofs (`Pair/Proofs/Growth.lean`,
+  `Denominators.lean`, `Nonvanishing.lean`) plugged in as well: only PNT remains as a hypothesis.
 
-Reused from the `{7,9,11}` project: `JConv_proof`, `Translation_proof`, `Criterion_proof`,
-`Delta_proof`, `DeltaFun_proof` (files `Zeta2Lean/Proofs/*.lean`; keep them in sync with the
-sibling project, see `BLUEPRINT_PAIR.md`).
+Reused from the `{7,9,11}` repository: `JConv_proof`, `Translation_proof`, `Criterion_proof`,
+`Delta_proof`, `DeltaFun_proof` (files `Zeta2Lean/Proofs/*.lean`, identical to that repository's;
+see `BLUEPRINT_PAIR.md`).
 
 Dependency graph (see `BLUEPRINT_PAIR.md`):
 * `L1 ← GenLinearForm (← JConv, Translation), CoeffVanish (← PF)`
@@ -45,11 +47,11 @@ Dependency graph (see `BLUEPRINT_PAIR.md`):
 
 namespace Zeta2.Pair
 
-/-- The routine part, proved (modulo the proof stubs): `Stmt_L1`. -/
+/-- The routine part, proved: `Stmt_L1`. -/
 theorem L1_full : Stmt_L1 :=
   L1_proof (GenLinearForm_proof JConv_proof Translation_proof) (CoeffVanish_proof PF_proof)
 
-/-- The routine part, proved (modulo the proof stubs): `Stmt_Valuation` (GAP 4). -/
+/-- The routine part, proved: `Stmt_Valuation` (GAP 4). -/
 theorem Valuation_full : Stmt_Valuation :=
   Valuation_proof (IntegrandTaylor_proof PF_proof) Delta_proof (DeltaFun_proof Delta_proof)
 
@@ -62,9 +64,9 @@ theorem zeta2_7_9_not_both_rational_of_gaps (hPNT : PNT_Stmt) (cfg : Config) (g 
   main_of_stmts cfg g δ hmargin JConv_proof L1_full Valuation_full Criterion_proof hGrowth hDen hNV
     hPNT
 
-/-- **Main theorem** (configuration E, target rates `gE = -0.72`, `deltaE = 9`).  Assuming the
-prime number theorem and the three open gap statements, `ζ₂(7)` and `ζ₂(9)` are not both
-rational. -/
+/-- **Main theorem, conditional form** (configuration E, rates `gE = -0.72`, `deltaE = 9`).
+Assuming the prime number theorem and the three gap statements, `ζ₂(7)` and `ζ₂(9)` are not both
+rational.  (`zeta2_7_9_not_both_rational_uncond` below discharges the gap statements.) -/
 theorem zeta2_7_9_not_both_rational (hPNT : PNT_Stmt) (hGrowth : Stmt_Growth configE gE)
     (hDen : Stmt_Denominators configE deltaE) (hNV : Stmt_Nonvanishing configE) :
     (∀ s : ℕ, HasVolkenborn (halfPow s) (J s)) ∧
@@ -77,8 +79,8 @@ theorem zeta2_7_9_not_both_rational_LS (hPNT : PNT_Stmt) (hGrowth : Stmt_Growth 
     PairStatement :=
   zeta2_7_9_not_both_rational hPNT hGrowth hDen (Nonvanishing_of_LaiSprang configE L1_full hLS)
 
-/-- The final target: everything plugged in (only PNT remains as a hypothesis).  Its axioms include
-`sorryAx` until the three gap files (and the routine stubs) are proved. -/
+/-- Everything plugged in: only the prime number theorem remains as a hypothesis (it is discharged
+in `Pair/Unconditional.lean`). -/
 theorem zeta2_7_9_not_both_rational_uncond (hPNT : PNT_Stmt) : PairStatement :=
   zeta2_7_9_not_both_rational hPNT
     (Growth_proof PF_proof (CoeffVanish_proof PF_proof))

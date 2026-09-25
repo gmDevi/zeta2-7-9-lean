@@ -4,26 +4,27 @@ import Zeta2Lean.Cited.Vendor.PNT.WienerIkehara
 /-!
 # Zeta2Lean.Cited.PNT — the prime number theorem `PNT_Stmt`, proved
 
-The PNT part of the `Cited` tree of the sibling `{7,9,11}` project (`~/zeta2-lean`, commit
-`594eb07`), copied with identical statements and proofs and collected into one file:
+The PNT part of the `Cited` tree of the `{7,9,11}` repository
+(https://github.com/gmDevi/zeta2-7-9-11-lean), copied with identical statements and proofs and
+collected into one file:
 
-* `Stmt_WienerIkehara` — `Cited/Statements.lean` of the sibling (the theorem
+* `Stmt_WienerIkehara` — `Cited/Statements.lean` of that repository (the theorem
   `WienerIkehara.tendsto_sum_div` of mathlib4 PR #43238 with its hypothesis class unbundled);
-* `WienerIkehara_proof` — `Cited/Proofs/WienerIkehara.lean` of the sibling: the vendored theorem
-  applied field by field;
+* `WienerIkehara_proof` — its `Cited/Proofs/WienerIkehara.lean`: the vendored theorem applied
+  field by field;
 * `tendsto_residueClass_sum_div_of_WI`, `tendsto_residueClass_sum_div_atTop_of_WI`,
-  `pnt_of_stmts` — the PNT section of `Cited/Assembly.lean` of the sibling, which is
-  `WeakPNT.lean` of mathlib4 PR #43238 (head `78e1b2bbd0`, Apache 2.0) with the Wiener–Ikehara
-  theorem taken as a hypothesis;
-* `PNT_proof : PNT_Stmt` — `Cited/Main.lean` of the sibling.
+  `pnt_of_stmts` — the PNT section of its `Cited/Assembly.lean`, which is `WeakPNT.lean` of
+  mathlib4 PR #43238 (head `78e1b2bbd0`, Apache 2.0) with the Wiener–Ikehara theorem taken as a
+  hypothesis;
+* `PNT_proof : PNT_Stmt` — its `Cited/Main.lean`.
 
 The mathematical work is in the two vendored files `Cited/Vendor/PNT/SchwartzCompactSupport.lean`
 (Terence Tao) and `Cited/Vendor/PNT/WienerIkehara.lean` (the PrimeNumberTheoremAnd contributors),
-byte-identical copies of the sibling's (SHA-256 checked), Apache 2.0 (see `LICENSE` there), with
-their copyright headers, authors and provenance notes kept verbatim.
+byte-identical copies of that repository's files (SHA-256 checked), Apache 2.0 (see `LICENSE`
+there), with their copyright headers, authors and provenance notes kept verbatim.
 
-`PNT_Stmt` itself is the frozen definition of `Zeta2Lean/Statements.lean` (identical in both
-projects).
+`PNT_Stmt` itself is the definition of `Zeta2Lean/Statements.lean` (identical in both
+repositories).
 -/
 
 open Filter Topology Finset

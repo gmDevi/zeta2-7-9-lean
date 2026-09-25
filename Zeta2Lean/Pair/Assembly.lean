@@ -5,10 +5,11 @@ import Zeta2Lean.Pair.Statements
 
 `main_of_stmts` derives `PairStatement` (convergence of all `J s`; `ζ₂(7)`, `ζ₂(9)` not both
 rational) for **any** configuration `cfg` and rates `g, δ` with `g + δ < 12 log 2`, from:
-* `Stmt_JConv`, `Stmt_Criterion` (reused from the `{7,9,11}` project), `Stmt_L1`, `Stmt_Valuation`
-  (routine lemmas of the pair blueprint), and
-* the three open gaps `Stmt_Growth cfg g`, `Stmt_Denominators cfg δ`, `Stmt_Nonvanishing cfg`,
-  and PNT (cited; only passed on to `Stmt_Denominators`).
+* `Stmt_JConv`, `Stmt_Criterion` (reused from the `{7,9,11}` repository), `Stmt_L1`,
+  `Stmt_Valuation` (routine lemmas of the pair blueprint), and
+* the three gap statements `Stmt_Growth cfg g`, `Stmt_Denominators cfg δ`, `Stmt_Nonvanishing cfg`
+  (proved for configuration E in `Pair/Proofs/`), and PNT (only passed on to
+  `Stmt_Denominators`; proved in `Cited/PNT.lean`).
 
 Argument (proof.md §8 with the pair data): suppose `ζ₂(7) = q₇`, `ζ₂(9) = q₉` rational.
 * `L_m := D_m S_{n_m} = a_{m,0} + a_{m,1} ζ₂(7) + a_{m,2} ζ₂(9)` with integers
