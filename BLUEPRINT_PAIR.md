@@ -6,12 +6,12 @@ This project is a copy of `zeta2-lean` (the `{7,9,11}` theorem, `BLUEPRINT.md`);
 infrastructure, the criterion and the Δ-calculus are **reused** from it. Everything pair-specific
 lives in `Zeta2Lean/Pair/` (namespace `Zeta2.Pair`).
 
-Status (2026-09-24, after prove round 1; census in `STATUS_PAIR.md`): definitions, statements and
-the logical assembly are complete, and the build is green. All routine lemmas are proved except
-GAP 4 (`Valuation_proof`, still a stub). The five reused sibling files and the reduction
-`Nonvanishing_of_LaiSprang` (GAP 3 from an arithmetic condition) are proved too. So the main
-theorem is proved from PNT, the three open gap statements and `Stmt_Valuation`. **The theorem is
-not proved.** GAP 1 (growth) is the decisive open problem.
+Status (2026-09-25; census in `STATUS_PAIR.md`, which supersedes the status remarks below):
+**the theorem is proved with no hypotheses**, `Zeta2.Pair.zeta2_7_9_not_both_rational_unconditional`
+(`Zeta2Lean/Pair/Unconditional.lean`, axioms `propext`, `Classical.choice`, `Quot.sound`). All four
+gaps are proved (GAP 1 growth, GAP 2 denominators, GAP 3 nonvanishing, GAP 4 valuation), and PNT
+is proved (`Zeta2Lean/Cited/PNT.lean`, Wiener–Ikehara vendored from the sibling). The sections
+below keep the original plan; where they call a gap "open", read "proved".
 
 ## Main theorem (`Zeta2Lean/Pair/Main.lean`)
 

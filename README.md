@@ -14,12 +14,16 @@ cited as explicit hypotheses).
 
 ## The pair {ζ₂(7), ζ₂(9)} (this copy: `zeta2-pair-lean`)
 
-`Zeta2Lean/Pair/` formalises the plan for "at least one of ζ₂(7), ζ₂(9) is irrational". It uses
-the shifted well-poised family, configuration E, and reuses the Volkenborn and criterion
-infrastructure above. The main theorem `Zeta2.Pair.zeta2_7_9_not_both_rational`
-(`Zeta2Lean/Pair/Main.lean`) is proved from PNT and three open gap statements (growth,
-denominators, nonvanishing). All routine lemmas are proved except GAP 4 (`Stmt_Valuation`), whose
-proof is still a stub. See `BLUEPRINT_PAIR.md` and `STATUS_PAIR.md`.
+`Zeta2Lean/Pair/` proves "at least one of ζ₂(7), ζ₂(9) is irrational". It uses the shifted
+well-poised family, configuration E, and reuses the Volkenborn and criterion infrastructure
+above. The theorem is proved **with no hypotheses**:
+`Zeta2.Pair.zeta2_7_9_not_both_rational_unconditional` (`Zeta2Lean/Pair/Unconditional.lean`;
+`#print axioms`: `propext`, `Classical.choice`, `Quot.sound`). All four gaps (growth,
+denominators, nonvanishing, valuation) are proved, and PNT is proved by the Wiener–Ikehara
+theorem vendored in `Zeta2Lean/Cited/` (from the sibling project, Apache 2.0). The only
+non-formalised input is the identification of `zeta2` with the Kubota–Leopoldt value (LSZ
+Lemma 2.8). See `STATUS_PAIR.md` (current state) and `BLUEPRINT_PAIR.md` (plan).
+`bash scripts/kernels.sh` replays every module of the pair through `leanchecker`.
 The mirror is `python/pair_mirror.py`; the independent reference engine is
 `python/lfam_reference.py`. The audit's from-scratch engine is
 `python/pair_audit_independent.py`; see "Audit" in `BLUEPRINT_PAIR.md`.

@@ -1,188 +1,145 @@
 # Status: at least one of ζ₂(7), ζ₂(9) is irrational (the pair programme)
 
-Updated 2026-09-24 by the integrator after prove round 1. The previous state is commit `3ba9c24`
-(blueprint and audit; every routine proof file except `NonvanishingLS` was a `sorry` stub).
-Plan and statement map: `BLUEPRINT_PAIR.md`.
+Updated 2026-09-25 by the integrator after the gap round (GAP 1 growth, GAP 2 denominators).
+Earlier milestones: `a0c8815` (routine lemmas), `7849511` (GAP 4 valuation), `80b7ece` (GAP 3
+nonvanishing), `5dde6c8` (GAP 1 work in progress). Plan and statement map: `BLUEPRINT_PAIR.md`.
 
 ## Headline
 
-* `bash scripts/build.sh Zeta2Lean.Pair.Main` is **green** (8952 jobs, exit 0).
-  `bash scripts/build.sh Zeta2Lean` (both theorems) is also green (8975 jobs, exit 0).
-* All routine lemmas of the pair are now proved except one, GAP 4 (`Valuation_proof`). The five
-  reused sibling files are proved too.
-* **4 `sorry` are left in the pair**, one per file:
-  * `Valuation` (GAP 4): a proof obligation of the main theorem, expected to be routine.
-  * `Growth` (GAP 1), `Denominators` (GAP 2) and `Nonvanishing` (GAP 3): open research gaps. They
-    are **hypotheses** of the main theorem, so their stubs enter only the `_uncond` variant.
-* `scripts/audit.sh` finds **no forbidden construct**.
-* `#print axioms` (end of `Zeta2Lean/Pair/Main.lean`):
-
-```
-'Zeta2.Pair.zeta2_7_9_not_both_rational' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
-'Zeta2.Pair.zeta2_7_9_not_both_rational_uncond' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
-```
-
-  In the main theorem, `sorryAx` comes **only from the `Valuation_proof` stub**. With
-  `Stmt_Valuation` as an extra hypothesis, the same assembly has only the standard axioms:
+**The theorem is proved in Lean, with no hypotheses.**
 
 ```lean
-theorem integrator1_main_mod_valuation (hPNT : PNT_Stmt) (hVal : Stmt_Valuation)
-    (hGrowth : Stmt_Growth configE gE) (hDen : Stmt_Denominators configE deltaE)
-    (hNV : Stmt_Nonvanishing configE) : PairStatement :=
-  main_of_stmts configE gE deltaE marginE JConv_proof L1_full hVal Criterion_proof hGrowth hDen
-    hNV hPNT
--- 'Zeta2.Pair.integrator1_main_mod_valuation' depends on axioms: [propext, Classical.choice, Quot.sound]
-```
-
-  This theorem was checked in a scratch file and is not part of the library. The scratch file was
-  deleted; a copy is in the integrator's scratchpad track `pair79/integrator1/`.
-
-**The theorem is not proved.** Even once GAP 4 is done, it remains conditional on the three open
-gaps, and on PNT, which is cited.
-
-## What the main theorem depends on now
-
-```lean
-theorem Zeta2.Pair.zeta2_7_9_not_both_rational (hPNT : PNT_Stmt) (hGrowth : Stmt_Growth configE gE)
-    (hDen : Stmt_Denominators configE deltaE) (hNV : Stmt_Nonvanishing configE) :
+theorem Zeta2.Pair.zeta2_7_9_not_both_rational_unconditional :
     (∀ s : ℕ, HasVolkenborn (halfPow s) (J s)) ∧
       ¬ ((∃ q : ℚ, zeta2 7 = q) ∧ (∃ q : ℚ, zeta2 9 = q))
+-- 'Zeta2.Pair.zeta2_7_9_not_both_rational_unconditional' depends on axioms:
+--   [propext, Classical.choice, Quot.sound]
 ```
 
+(`Zeta2Lean/Pair/Unconditional.lean`; also `pairStatement_unconditional : PairStatement`.)
+
+* All four gaps are closed: GAP 1 (growth), GAP 2 (denominators), GAP 3 (nonvanishing),
+  GAP 4 (valuation). Every routine lemma is proved. The pair has **0 `sorry`**.
+* PNT is no longer a hypothesis: `Zeta2.PNT_proof : PNT_Stmt` (`Zeta2Lean/Cited/PNT.lean`),
+  Wiener–Ikehara vendored from open mathlib4 PRs, copied from the sibling `{7,9,11}` project.
+* `bash scripts/build.sh Zeta2Lean.Pair.Unconditional`: green (8960 jobs, exit 0).
+  `bash scripts/build.sh Zeta2Lean.Pair.Main`: green (8956 jobs).
+* `#print axioms` gives `[propext, Classical.choice, Quot.sound]` for all of
+  `zeta2_7_9_not_both_rational` (the frozen conditional form), `zeta2_7_9_not_both_rational_uncond`
+  (PNT as the only hypothesis), `PNT_proof`, `zeta2_7_9_not_both_rational_unconditional` and
+  `pairStatement_unconditional`.
+* `scripts/audit.sh`: no forbidden construct anywhere; no `sorry` in any file the pair imports
+  (the 19 remaining `sorry`s are the stale `{7,9,11}` stubs of the fork, see below).
+* Kernel replay: `leanchecker` on all 30 project modules in the import closure of
+  `Zeta2Lean.Pair.Unconditional`, one at a time: all pass (see "Kernel replay" below).
+
+## What the theorem rests on
+
 1. **Lean kernel + Mathlib** (`v4.35.0-rc2`). Axioms: `propext`, `Classical.choice`, `Quot.sound`.
-2. **One proof stub:** `Valuation_proof : Stmt_IntegrandTaylor → Stmt_Delta → Stmt_DeltaFun →
-   Stmt_Valuation` (GAP 4). Its three hypotheses are all proved.
-3. **Cited hypothesis:** `PNT_Stmt` (`ψ(x)/x → 1`). Only `Stmt_Denominators` consumes it.
-4. **Three open gap hypotheses:** `Stmt_Growth configE gE`, `Stmt_Denominators configE deltaE`
-   and `Stmt_Nonvanishing configE`. In the `_LS` variant the last is replaced by the arithmetic
-   `Stmt_LaiSprangCond configE`.
-5. **Trusted definitions in the conclusion** (sibling `Defs.lean`): `volkenbornSum`,
-   `HasVolkenborn`, `halfPow`, `J`, `zeta2`.
-   * The gap hypotheses are stated with the pair objects `rho0`, `Z7`, `Z9`, `integrand`,
-     `ClearsDen` and `configE`.
-   * These objects do not affect the validity of the implication. They do decide whether the gap
-     hypotheses are true, and hence provable. They were audited against the mathematics
-     (`BLUEPRINT_PAIR.md`, "Audit").
-6. **One cited identification, not formalised:** `zeta2 s = J(s-1)/((s-1)2^s)` (LSZ Lemma 2.8).
-   This is the same as in the sibling; see its `STATUS.md`.
+   No `native_decide`, no `implemented_by`/`extern`, no `axiom` declarations. The certified
+   numerics use `decide +kernel` (kernel reduction of `Bool` computations, GAP 2 certificates) and
+   `norm_num` on exact rationals (GAP 1 landscape certificates).
+2. **Vendored code** (Apache 2.0, headers and authors kept): `Cited/Vendor/PNT/WienerIkehara.lean`
+   (the PrimeNumberTheoremAnd contributors, mathlib4 PR #43233/#43238) and
+   `Cited/Vendor/PNT/SchwartzCompactSupport.lean` (Terence Tao), byte-identical (SHA-256) to the
+   sibling's copies; `Cited/PNT.lean` is the PNT part of the sibling's `Cited/` tree (its
+   `WeakPNT` section is mathlib4 PR #43238). Being Lean proofs, they add no trust.
+3. **Trusted definitions in the conclusion** (sibling `Defs.lean`): `volkenbornSum`,
+   `HasVolkenborn`, `halfPow`, `J`, `zeta2`. The conclusion is about these objects only; the
+   intermediate objects (`rho0`, `Z7`, `Z9`, `integrand`, `ClearsDen`, `configE`) only have to be
+   *some* objects for which the proof goes through, and do not need to be trusted.
+4. **One cited identification, not formalised:** `zeta2 s := J(s-1)/((s-1) 2^s)` is the
+   Kubota–Leopoldt 2-adic zeta value `ζ₂(s)` by LSZ Lemma 2.8 (the same as in the sibling; see its
+   `STATUS.md`). Mathlib has no Kubota–Leopoldt `ζ_p` yet. The Lean theorem is literally about
+   the Volkenborn integrals `J 6 / 768` and `J 8 / 4096`.
 
-## Per-file census
+## Per-file census (`Zeta2Lean/Pair/`, reused and vendored files)
 
-| file | theorem : Stmt | deps (hypotheses) | sorry | lines | status |
-|---|---|---|---|---|---|
-| `Pair/Proofs/GenLinearForm` | `GenLinearForm_proof : Stmt_GenLinearForm` | JConv, Translation | 0 | 109 | done (round 1) |
-| `Pair/Proofs/PartialFractions` | `PF_proof : Stmt_PF` | – | 0 | 353 | done (round 1) |
-| `Pair/Proofs/CoeffVanish` | `CoeffVanish_proof : Stmt_CoeffVanish` | PF | 0 | 279 | done (round 1) |
-| `Pair/Proofs/LinearForm` | `L1_proof : Stmt_L1` | GenLinearForm, CoeffVanish | 0 | 63 | done (round 1) |
-| `Pair/Proofs/IntegrandTaylor` | `IntegrandTaylor_proof : Stmt_IntegrandTaylor` | PF | 0 | 91 | done (round 1) |
-| `Pair/Proofs/CrudeIntegrality` | `CrudeInt_proof : Stmt_CrudeInt` | – | 0 | 407 | done (round 1) |
-| `Pair/Proofs/NonvanishingLS` | `Nonvanishing_of_LaiSprang : Stmt_LaiSprangCond cfg → Stmt_Nonvanishing cfg`; `frequently_prime_forty_mul_sub_one(_gt)` | L1 | 0 | 171 | done (before round 1) |
-| `Pair/Proofs/Valuation` | `Valuation_proof : Stmt_Valuation` (**GAP 4**) | IntegrandTaylor, Delta, DeltaFun | 1 | 79 | **stub**: routine, next round |
-| `Pair/Proofs/Growth` | `Growth_proof : Stmt_Growth configE gE` (**GAP 1**) | PF, CoeffVanish | 1 | 91 | open gap (hypothesis) |
-| `Pair/Proofs/Denominators` | `Denominators_proof : Stmt_Denominators configE deltaE` (**GAP 2**) | PF, CoeffVanish, CrudeInt | 1 | 86 | open gap (hypothesis) |
-| `Pair/Proofs/Nonvanishing` | `Nonvanishing_proof : Stmt_Nonvanishing configE` (**GAP 3**) | L1, IntegrandTaylor, Delta, DeltaFun, PF, CoeffVanish, CrudeInt | 1 | 83 | open gap (hypothesis) |
-| `Proofs/JConvergence` (reused) | `JConv_proof : Stmt_JConv` | – | 0 | 217 | done (synced from sibling) |
-| `Proofs/Translation` (reused) | `Translation_proof : Stmt_Translation` | – | 0 | 148 | done (synced from sibling) |
-| `Proofs/Criterion` (reused) | `Criterion_proof : Stmt_Criterion` | – | 0 | 148 | done (synced from sibling) |
-| `Proofs/DeltaCalculus` (reused) | `Delta_proof : Stmt_Delta` | – | 0 | 220 | done (synced from sibling) |
-| `Proofs/DeltaFunctions` (reused) | `DeltaFun_proof : Stmt_DeltaFun` | Delta | 0 | 327 | done (synced from sibling) |
-| `Pair/Assembly.lean` | `main_of_stmts`, `marginE`, `Sn_eq_Lform`, … | JConv, L1, Valuation, Criterion, 3 gaps, PNT | 0 | 215 | done (blueprint) |
-| `Pair/Main.lean` | `zeta2_7_9_not_both_rational` (+ 3 variants) | PNT, 3 gaps | 0 | 92 | done, modulo the `Valuation` stub |
+| file | theorem : Stmt | sorry | lines | status |
+|---|---|---|---|---|
+| `Pair/Proofs/GenLinearForm` | `GenLinearForm_proof` | 0 | 109 | done |
+| `Pair/Proofs/PartialFractions` | `PF_proof` | 0 | 353 | done |
+| `Pair/Proofs/CoeffVanish` | `CoeffVanish_proof` | 0 | 279 | done |
+| `Pair/Proofs/LinearForm` | `L1_proof` | 0 | 63 | done |
+| `Pair/Proofs/IntegrandTaylor` | `IntegrandTaylor_proof` | 0 | 91 | done |
+| `Pair/Proofs/CrudeIntegrality` | `CrudeInt_proof` | 0 | 407 | done |
+| `Pair/Proofs/NonvanishingLS` | `Nonvanishing_of_LaiSprang` | 0 | 171 | done |
+| `Pair/Proofs/Valuation` | `Valuation_proof` (**GAP 4**) | 0 | 826 | done (`7849511`) |
+| `Pair/Proofs/Nonvanishing` | `Nonvanishing_proof` (**GAP 3**) | 0 | 1557 | done (`80b7ece`) |
+| `Pair/Proofs/Growth` | `Growth_proof : Stmt_Growth configE gE` (**GAP 1**) | 0 | 3251 | done (this round) |
+| `Pair/Proofs/Landscape/Numerics` | certified `log`, `arctan` bounds | 0 | 301 | done (this round) |
+| `Pair/Proofs/Landscape/RealProfile` | `Preal_le` (`landscape_real`) | 0 | 730 | done (this round) |
+| `Pair/Proofs/Landscape/VertBase` | helpers for `VertLine` | 0 | 165 | done (this round) |
+| `Pair/Proofs/Landscape/VertLine` | `Psi_le` (`landscape_vert`) | 0 | 793 | done (this round) |
+| `Pair/Proofs/Denominators` | `Denominators_proof : Stmt_Denominators configE deltaE` (**GAP 2**) | 0 | 3370 | done (this round) |
+| `Proofs/JConvergence`, `Translation`, `Criterion`, `DeltaCalculus`, `DeltaFunctions` (reused) | `JConv_proof`, …, `DeltaFun_proof` | 0 | 1060 | done (synced from sibling) |
+| `Cited/PNT` + `Cited/Vendor/PNT/*` (new) | `PNT_proof : PNT_Stmt` | 0 | 1123 | done (copied from sibling) |
+| `Pair/Assembly`, `Pair/Main` (frozen) | `main_of_stmts`, `zeta2_7_9_not_both_rational` (+ variants) | 0 | 307 | done |
+| `Pair/Unconditional` (new) | `zeta2_7_9_not_both_rational_unconditional` | 0 | 35 | done (this round) |
 
-* **Axioms of the proved theorems.** `#print axioms` gives `[propext, Classical.choice, Quot.sound]`
-  for each of the following:
-  * pair: `GenLinearForm_proof`, `PF_proof`, `CoeffVanish_proof`, `L1_proof`, `L1_full`,
-    `IntegrandTaylor_proof`, `CrudeInt_proof`, `Nonvanishing_of_LaiSprang`,
-    `frequently_prime_forty_mul_sub_one_gt`, `main_of_stmts`, `marginE`;
-  * reused: `JConv_proof`, `Translation_proof`, `Criterion_proof`, `Delta_proof`,
-    `DeltaFun_proof`.
-* **Exact types.** A scratch file (since deleted) type-checked
-  `example : <deps> → Stmt_X := X_proof` for all 16 proof theorems. The same file checked by `rfl`
-  that the short names `Stmt_PF`, `Stmt_L1`, `Stmt_CoeffVanish` and `Stmt_CrudeInt` resolve to
-  the pair objects.
-* **Framework files.** `Pair/Defs.lean` (252 lines) and `Pair/Statements.lean` (163 lines) have
-  0 `sorry` and were not changed in this round. Neither were `Pair/Assembly.lean` or
-  `Pair/Main.lean`.
-* **Other `sorry`s in the `audit.sh` census.** Nineteen `{7,9,11}` proof files under
-  `Zeta2Lean/Proofs/` are **stale stubs from the fork**. These are all of that directory except
-  the five reused files. The pair imports none of them. They are why this copy's sibling theorem
-  `Zeta2.zeta2_7_9_11_not_all_rational` (`Zeta2Lean/Main.lean`) still shows `sorryAx`. The
-  sibling repository has all 24 of its files proved (its `STATUS.md`).
-  * To get a clean census, sync those 19 files together with the sibling's `Defs.lean` (two extra
-    API lemmas). The pair does not need this.
-* **Build warnings in the modules the pair imports.** There are 16:
-  * four "declaration uses `sorry`", one for each stub;
-  * twelve from Mathlib's style linters: over-long lines (PartialFractions 1, Translation 3,
-    Criterion 1, DeltaCalculus 1) and a `show` that changes the goal (DeltaCalculus 6).
+### How the two gaps of this round were proved (details in each file's docstring)
 
-  None affects correctness.
-
-### How the files were proved (one line each; details in each file's docstring)
-
-* **GenLinearForm**: linearity (`HasVolkenborn.sum`, `.const_mul`) of the translated `JConv`.
-  `(i)₃(i+3) = (i)₄` assembles the translation terms into `genRho0`. `a` stays general, so the file
-  is reusable for other families.
-* **PartialFractions**: the substitution hom `t ↦ -k₀ + ε` gives `ε⁶ ∣ (Rnum − PFpoly)(−k₀+ε)`.
-  The `(X+k)⁶` are pairwise coprime, and a degree count gives `6n+5 < 6n+6` (from `∑h = 0` and
-  `n + 2h_m ≥ 0`). The series form multiplies by an inverse. Adapted from the sibling's proof.
-* **CoeffVanish**:
-  * `rescale (−1)` symmetry `Gser(n−k) = −ρ(Gser k)`, reindexing `u ↦ n−1−u`; the number of
-    numerator factors, `6n`, is even;
-  * `c₁ = 0` from the coefficient of `t^{6n+5}` in `Stmt_PF.poly`;
-  * `c_even = 0` by reflecting the sum.
-* **LinearForm**: `Stmt_GenLinearForm` at `a = 6` with `c₁ = c₂ = c₄ = c₆ = 0`.
-* **IntegrandTaylor**: closed form of `((c+X)^{d+1})⁻¹` from Mathlib's
-  `mk_add_choose_mul_one_sub_pow_eq_one` and `rescale`. Its coefficient 3 is
-  `−(i)₃/6 · c^{−(i+3)}`.
-* **CrudeIntegrality**:
-  * `d`-integral series form a subring, `comap (rescale d)` of `ℤ⟦X⟧`;
-  * `2^{6n}` clears the numerator, which has `6n` factors;
-  * `(k!(n−k)!)⁶ P_k⁻¹` is a product of geometric series with `c ∣ d_n`;
-  * `forms` is proved in `⊥ : Subring ℚ`.
-* **Reused files**: copied verbatim from the sibling's proved versions. For how they were proved,
-  see the sibling's `STATUS.md`.
+* **GAP 1 (growth), `Growth.lean` + `Landscape/`.** Target rate `gE = -0.72` (true rate
+  `-0.78127`). Contour-integral representation with half-integer kernels
+  `K_s(t) = ∑_ν (t - ν - 1/2)^{-s}`: on the line `Re t = n/40` the kernel integrals `I₂, I₄, I₅`
+  are explicit combinations of `ρ₀, Z₇, Z₉` (Cauchy on half-planes, the five critical zeros, the
+  symmetry `R_n(-n-t) = -R_n(t)`), inverted via a Cauchy–Schwarz determinant. The contour is
+  shifted to `Re t = 0.07 n` above height 1 and each piece is bounded by the pointwise bound
+  `|R_n(t)| ≤ poly · exp(n Φ(t/n))`. The two numerical landscape inequalities
+  (`Φ(ξ,0) ≤ -18/25` on `[1/40, 7/100]`; `Φ(7/100, η) - 2πη ≤ -18/25` on `(0,1]`) are kernel-checked
+  certified subdivisions with rational `log`/`arctan` enclosures, generated by
+  `Landscape/gen/*.py` (exact fractions).
+* **GAP 2 (denominators), `Denominators.lean`.** Target `deltaE = 9` for the odd part. Residue
+  level only (no second/third-order savings): a local `q`-adic bound for every odd prime
+  (Legendre-type counts, capped valuations; primes `q > n` do not divide, by absorption into the
+  critical zeros), 766 kernel-checked interval certificates for the residue function
+  `s(x) = min_y Vl(x, y)` on `[1, 41)` (data from `python/pair_den_certs.py`), and PNT through
+  `θ(x)/x → 1`. The resulting constant is `T = 8.9607… ≤ 8.97 < 9` (`margin_T`, fixed-point
+  integer arithmetic in the kernel). With `gE + deltaE = 8.28 < 12 log 2 = 8.3178` this closes the
+  criterion.
 
 ## Integrator checks (this round)
 
-* **Diff against `3ba9c24`.** `git diff 3ba9c24` touches only 11 proof files: 6 under
-  `Zeta2Lean/Pair/Proofs/` and the 5 reused files under `Zeta2Lean/Proofs/`. These are unchanged:
-  * `Pair/Defs`, `Pair/Statements`, `Pair/Assembly`, `Pair/Main`;
-  * the sibling framework files `Defs`, `Statements`, `Assembly`, `Main`;
-  * `lakefile.toml`, `lake-manifest.json`, `lean-toolchain`.
+* **Frozen files untouched.** `git diff` against `5dde6c8` touches only `Pair/Proofs/Growth.lean`
+  and `Pair/Proofs/Denominators.lean` among existing Lean files; `Pair/Defs`, `Pair/Statements`,
+  `Pair/Assembly`, `Pair/Main`, the sibling framework files, `lakefile.toml`,
+  `lake-manifest.json` and `lean-toolchain` are unchanged. The theorem headers of `Growth_proof`
+  and `Denominators_proof` are identical to their stubs.
+* **New files:** `Pair/Proofs/Landscape/{Numerics,RealProfile,VertBase,VertLine}.lean` and
+  `Landscape/gen/*.py` (GAP 1), `python/pair_den_certs.py` (GAP 2), `Cited/PNT.lean`,
+  `Cited/Vendor/PNT/{LICENSE,SchwartzCompactSupport.lean,WienerIkehara.lean}`,
+  `Pair/Unconditional.lean`, `scripts/kernels.sh`. The root `Zeta2Lean.lean` now also imports
+  `Zeta2Lean.Pair.Unconditional`.
+* **Statement issues.** Neither prover raised one. Regression: `python3 python/pair_mirror.py
+  --quick` (0 checks failed) and `python3 python/pair_audit_independent.py quick` (0 failures).
+* **Hygiene.** LF line endings. The provers' scratch files (`Zeta2Lean/Scratch/`, 26 files, never
+  committed) were moved out of the repository to `C:\tmp\pair79_round1_scratch`.
+* **Other `sorry`s in the `audit.sh` census.** Nineteen `{7,9,11}` proof files under
+  `Zeta2Lean/Proofs/` are stale stubs from the fork (all of that directory except the five reused
+  files). The pair imports none of them; they only make this copy's `Zeta2Lean/Main.lean`
+  (`zeta2_7_9_11_not_all_rational`) show `sorryAx`. The sibling repository has that theorem fully
+  proved.
 
-  No file was added or removed.
-* **Theorem headers and imports.** Every `theorem X_proof` header, both hypotheses and type, is
-  identical to its stub. Some proofs switched from `:= by` to `where` or term syntax. Imports are
-  unchanged.
-  * The only new namespace is `Zeta2.Pair.PairPF`, which holds the private helpers of
-    PartialFractions. `PF_proof` is outside it.
-  * The only new `def`s are private helpers: `crudeIntPS`, `crudeDInt`, `substPS`, `DfnGood` and
-    `jcW`. None of them is a `Stmt`.
-* **Forbidden and unusual constructs.** None of the 11 changed proof files contains any of:
-  `set_option`, `elab`, `macro`, `syntax`, `run_cmd`, `#eval`, `instance`, `attribute`,
-  `notation`, `axiom`, `opaque`, `unsafe`, `native_decide`, `implemented_by`, `extern`.
-* **Reused files.** The five are byte-identical (`cmp`) to the sibling's proved files. They compile
-  against this copy's `Defs.lean`, which lacks only the sibling's unused lemmas `mem_chains` and
-  `chainPrev_le`. `Defs.lean` was therefore not synced.
-* **Statement issues.** None of the 12 prover reports raised one (five say "none" explicitly), so
-  there was nothing to adjudicate and no statement changed. As a regression check, two numerical
-  checks were re-run, each with 0 failures:
-  * `python3 python/pair_mirror.py --quick` (4 s);
-  * `python3 python/pair_audit_independent.py quick` (10 s).
-* **Hygiene.** LF line endings verified. The scratch files `Zeta2Lean/Scratch/integrator1_*.lean`
-  were deleted.
+## Kernel replay
 
-## Next steps
+`bash scripts/kernels.sh` (2026-09-25): `leanchecker` (toolchain `v4.35.0-rc2`) replayed the own
+declarations of all **30 project modules** in the import closure of
+`Zeta2Lean.Pair.Unconditional`, one module at a time: **all exit 0** (`ALL_DONE fail=0`). These are
+the 20 `Pair` modules (incl. `Landscape/*` and `Unconditional`), `Cited/PNT` and the two vendored
+PNT files, the five reused `Proofs/*` files, and `Defs`/`Statements`. Slowest:
+`Pair.Proofs.Denominators` (121 s, 6.8 GB peak RSS, the kernel-reduced certificates); every other
+module 11–43 s at about 6.2 GB (mostly loading Mathlib).
 
-1. **GAP 4: `Valuation_proof`**, the last routine stub. When it is proved,
-   `zeta2_7_9_not_both_rational` depends only on the standard axioms, PNT and the three gap
-   hypotheses.
-   * All of its hypotheses are proved.
-   * The plan is in `Valuation.lean`'s docstring: a Leibniz expansion of the product form, then
-     Legendre on the block factorials, then the Δ-calculus. Generalised binomials with a negative
-     base need Vandermonde.
-   * The valuation track's Theorem G4 (`pair79/valuation`) gives
-     `v₂(S) ≥ 12n + 9 − Σ s₂(N_m) − 4λ`.
-2. **GAPs 1–3** (growth, denominators, nonvanishing) are research tracks; see `BLUEPRINT_PAIR.md`,
-   "The gaps". GAP 1 is the decisive one.
-3. **Cosmetic:** silence the style linters (long lines; `show` → `change`).
+## What remains
+
+Nothing mathematical for the Lean theorem. Optional follow-ups:
+
+1. **Cosmetic:** the style linters (long lines, `show` → `change`, flexible `simp`, unused simp
+   arguments) warn in `Growth.lean` and a few reused files. None affects correctness.
+2. **Census cleanliness:** sync the 19 stale `{7,9,11}` files and the sibling's `Defs.lean` (two
+   extra API lemmas), or delete the `{7,9,11}` tree from this copy.
+3. **Documentation:** the body of `BLUEPRINT_PAIR.md` (now with a status note at the top) and the
+   frozen docstring of `Pair/Main.lean` still describe the gaps as open; the docstrings of the gap
+   files and this file are authoritative.
+4. **LSZ Lemma 2.8** (the identification of `zeta2` with Kubota–Leopoldt `ζ₂`): formalise once
+   Mathlib has `ζ_p`.
