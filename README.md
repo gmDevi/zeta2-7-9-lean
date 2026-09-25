@@ -10,6 +10,9 @@ It sharpens L. Lai, *On the irrationality of certain 2-adic zeta values*, IJNT 2
 is irrational, and the companion result that at least one of ζ₂(7), ζ₂(9), ζ₂(11) is irrational
 (https://github.com/gmDevi/zeta2-7-9-11-lean). Both follow from it.
 
+**Paper.** The mathematical proof is written up in [`docs/zeta2_7_9.pdf`](docs/zeta2_7_9.pdf) (56 pages, including the
+{7, 9, 11} theorem as a warm-up).
+
 ## What exactly is proved in Lean
 
 ```lean
