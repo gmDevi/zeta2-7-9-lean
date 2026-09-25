@@ -214,14 +214,16 @@ related_formalizations:
   - id: "https://github.com/gmDevi/zeta2-7-9-11-lean"
     relationship: builds-on
     note: >-
-      Companion formalisation by the same maintainer, submitted to the Palomar registry (submission
-      88mvxbbzhnnc): at least one of ζ₂(7), ζ₂(9), ζ₂(11) is irrational, by a different
-      construction. The theorem recorded here implies it. This repository started as a copy of that
-      one and reuses its infrastructure unchanged: the six trusted definitions (identical, so both
-      statements are about the same zeta2), the statements and proofs of the convergence of J s,
-      the translation formula, Lai's criterion and the Δ-calculus (Zeta2Lean/Proofs), and the proof
-      of the prime number theorem (Zeta2Lean/Cited). The construction, the denominator and growth
-      bounds and the nonvanishing argument are new here.
+      Companion formalisation by the same maintainer, registered in the Palomar registry as
+      PALOMAR-2026-09-25-000023 (commit 2ae1bccb82f1f72ed7a7aeab3196aa1cdbee165a): at least one of
+      ζ₂(7), ζ₂(9), ζ₂(11) is irrational, by a different construction. The theorem recorded here
+      implies it. This repository started as a copy of that one and reuses its infrastructure
+      unchanged: the six trusted definitions (identical, so both statements are about the same
+      zeta2), the statements and proofs of the convergence of J s, the translation formula, Lai's
+      criterion and the Δ-calculus (Zeta2Lean/Proofs, files identical to those of that commit), and
+      the proof of the prime number theorem (Zeta2Lean/Cited: identical vendored files, and PNT.lean,
+      which collects that repository's PNT statements and proofs in one file). The construction, the
+      denominator and growth bounds and the nonvanishing argument are new here.
   - id: "https://github.com/leanprover-community/mathlib4/pull/43238"
     relationship: builds-on
     note: >-

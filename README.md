@@ -31,8 +31,9 @@ The development has two layers:
 * `Zeta2Lean/Cited/PNT.lean` proves the prime number theorem (`PNT_proof : PNT_Stmt`, i.e. ψ(x)/x → 1 with
   Mathlib's `Chebyshev.psi`) from the Wiener–Ikehara theorem, vendored under `Cited/Vendor/PNT/` from mathlib4 PRs
   #43046, #43233 and #43238 (head 78e1b2bbd0). That code is derived from the PrimeNumberTheoremAnd
-  project, keeps its Apache-2.0 headers and authors, and was ported to this Mathlib pin. These files are
-  the same as in the {7,9,11} repository. `Zeta2Lean/Pair/Unconditional.lean` composes the two.
+  project, keeps its Apache-2.0 headers and authors, and was ported to this Mathlib pin. The vendored files
+  are identical to those of the {7,9,11} repository, and `PNT.lean` collects that repository's PNT
+  statements and proofs, unchanged, in one file. `Zeta2Lean/Pair/Unconditional.lean` composes the two.
 
 **Trusted definitions.** These are the only project definitions that occur in the statement
 (`Zeta2Lean/Defs.lean`, identical to those of the {7,9,11} repository):
@@ -103,9 +104,10 @@ statements below; `marginE` checks −0.72 + 9 = 8.28 < 12 log 2 = 8.3178. The p
   q > max(B, 10⁹) (infinitely many m by Mathlib's Dirichlet theorem `Nat.frequently_atTop_prime_and_modEq`),
   v_q(ρ₀) = −9, v_q(Z₇) ≥ −3 and v_q(Z₉) ≥ −1; if ζ₂(7) and ζ₂(9) were rational, this would force S_n ≠ 0
   (the argument of Lai–Sprang, Lemma 2.2).
-* **Shared infrastructure**, identical to the {7,9,11} repository's files: convergence of `J s`, the
-  translation formula, Lai's criterion and the Δ-calculus (`Zeta2Lean/Proofs/`), and the prime number theorem
-  (`Zeta2Lean/Cited/`).
+* **Shared infrastructure**, taken unchanged from the {7,9,11} repository: convergence of `J s`, the
+  translation formula, Lai's criterion and the Δ-calculus (`Zeta2Lean/Proofs/`, identical files), and the prime
+  number theorem (`Zeta2Lean/Cited/`: identical vendored files, and `PNT.lean`, which collects that
+  repository's PNT statements and proofs in one file).
 
 **Differences from `docs/proof.md`.** The Lean proof follows the residue-level ("minimal") route of
 docs/proof.md §8, with these differences:
@@ -134,13 +136,13 @@ The sharper bounds of docs/proof.md (§4.6 and Theorem G′) are not formalised;
   Scholar, MathSciNet and Lai's thesis were not searched, so novelty beyond this search is not established.
   Unrefereed GitHub drafts by C. D. Long (August 2026) claim irrationality of every ζ₂(s) with s odd and
   3 ≤ s ≤ 29, which would imply this result. We have not been able to verify their large-prime step.
-* **Relation to the {7, 9, 11} result.** https://github.com/gmDevi/zeta2-7-9-11-lean, submitted to the
-  Palomar registry, proves that at least one of ζ₂(7), ζ₂(9), ζ₂(11) is irrational, with the construction
-  2^{16n}(2t+n)(t+½)_n^8/(t)_{n+1}^8. The theorem here implies it. The two proofs share the Volkenborn
-  integral, the Δ-calculus, Lai's criterion and the prime number theorem (the shared files above), but not
-  the construction, the denominator argument (Andrews' transformation there, Legendre-type counting here) or
-  the nonvanishing argument (a 2-adic dominant term there, an auxiliary prime here). This repository started
-  as a copy of that one.
+* **Relation to the {7, 9, 11} result.** https://github.com/gmDevi/zeta2-7-9-11-lean, registered in the
+  Palomar registry as PALOMAR-2026-09-25-000023, proves that at least one of ζ₂(7), ζ₂(9), ζ₂(11) is
+  irrational, with the construction 2^{16n}(2t+n)(t+½)_n^8/(t)_{n+1}^8. The theorem here implies it. The
+  two proofs share the Volkenborn integral, the Δ-calculus, Lai's criterion and the prime number theorem
+  (the shared files above), but not the construction, the denominator argument (Andrews' transformation
+  there, Legendre-type counting here) or the nonvanishing argument (a 2-adic dominant term there, an
+  auxiliary prime here). This repository started as a copy of that one.
 * **Scope.** The theorem says that ζ₂(7) and ζ₂(9) are not both rational. It does not say which of them is
   irrational, and it gives no irrationality measure.
 
